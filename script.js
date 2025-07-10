@@ -1,224 +1,208 @@
-// Variables globales
-let sesionIniciada = false;
-let temporizadorActivo = false;
-let tiempoDescanso = 30;
-let progresoNivel = 0;
+let entrenamientoEnCurso = false;
+let datosSesion = [];
+let datosHistoricos = {};
 let puntos = 0;
 let racha = 0;
 let nivel = 1;
-const logros = [];
 
-// DOMContentLoaded
-window.onload = () => {
-  generarCalendario();
-  document.getElementById("tiempo-descanso").addEventListener("input", e => {
-    tiempoDescanso = e.target.value;
-  });
-};
-
-// Mostrar secciones
+// MOSTRAR SECCIONES
 function mostrarSeccion(id) {
-  document.querySelectorAll("main section").forEach(sec => sec.classList.remove("visible"));
-  document.getElementById(id).classList.add("visible");
+  document.querySelectorAll('section').forEach(sec => sec.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
 }
 
-// Iniciar entrenamiento
+// INICIAR SESIÓN
 function iniciarTemporizador() {
-  sesionIniciada = true;
+  entrenamientoEnCurso = true;
   document.getElementById("grupo-muscular").disabled = false;
-  document.getElementById("temporizador").textContent = "00:00:00";
-  temporizadorActivo = true;
-  temporizador();
+  iniciarCuentaAtras("temporizador", 3600);
 }
 
-function temporizador() {
-  let seg = 0;
-  setInterval(() => {
-    if (!temporizadorActivo) return;
-    seg++;
-    const h = String(Math.floor(seg / 3600)).padStart(2, "0");
-    const m = String(Math.floor((seg % 3600) / 60)).padStart(2, "0");
-    const s = String(seg % 60).padStart(2, "0");
-    document.getElementById("temporizador").textContent = `${h}:${m}:${s}`;
+// CUENTA ATRÁS GENERAL
+function iniciarCuentaAtras(idElemento, segundos) {
+  const display = document.getElementById(idElemento);
+  let restante = segundos;
+  const timer = setInterval(() => {
+    const hrs = Math.floor(restante / 3600);
+    const mins = Math.floor((restante % 3600) / 60);
+    const secs = restante % 60;
+    display.textContent = `${hrs.toString().padStart(2, '0')}:${mins
+      .toString()
+      .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    if (--restante < 0) clearInterval(timer);
   }, 1000);
 }
 
-// Cancelar entrenamiento
+// CARGAR GRUPO MUSCULAR
+function cargarEjerciciosGrupo() {
+  const grupo = document.getElementById("grupo-muscular").value;
+  const ejercicios = {
+    pecho: ["Press banca", "Aperturas", "Fondos", "Press inclinado"],
+    espalda: ["Dominadas", "Remo", "Peso muerto", "Jalón"],
+    piernas: ["Sentadillas", "Prensa", "Zancadas", "Elevación talones"],
+    brazos: ["Curl bíceps", "Extensión triceps", "Curl martillo", "Fondos banco"],
+    hombros: ["Press militar", "Elevaciones laterales", "Pájaros", "Arnold press"],
+    core: ["Plancha", "Crunch", "Elevaciones", "Twist ruso"]
+  };
+
+  const selector = document.getElementById("selector-ejercicio");
+  selector.innerHTML = "";
+  if (!ejercicios[grupo]) return;
+
+  const select = document.createElement("select");
+  select.innerHTML = `<option value="">-- Elige ejercicio --</option>`;
+  ejercicios[grupo].forEach(ej => {
+    const op = document.createElement("option");
+    op.value = ej;
+    op.textContent = ej;
+    select.appendChild(op);
+  });
+  select.onchange = () => crearTablaEjercicio(select.value, grupo);
+  selector.appendChild(select);
+}
+
+// CREAR TABLA DE EJERCICIO
+function crearTablaEjercicio(ejercicio, grupo) {
+  if (!ejercicio) return;
+  const contenedor = document.getElementById("contenedor-tablas");
+  const tabla = document.createElement("table");
+  tabla.innerHTML = `
+    <thead>
+      <tr><th colspan="6">${ejercicio}</th></tr>
+      <tr><th>Serie</th><th>Anterior KG</th><th>Anterior Reps</th><th>KG</th><th>Reps</th><th>Hecho</th></tr>
+    </thead>
+    <tbody></tbody>
+  `;
+
+  const cuerpo = tabla.querySelector("tbody");
+
+  function agregarFila(num) {
+    const tr = document.createElement("tr");
+    const kgAnterior = Math.floor(Math.random() * 20 + 40);
+    const repsAnterior = Math.floor(Math.random() * 4 + 8);
+
+    tr.innerHTML = `
+      <td>${num}</td>
+      <td>${kgAnterior}</td>
+      <td>${repsAnterior}</td>
+      <td><input type="number" /></td>
+      <td><input type="number" /></td>
+      <td><button class="hecho" onclick="marcarHecho(this)">✔</button></td>
+    `;
+    cuerpo.appendChild(tr);
+
+    const barra = document.createElement("div");
+    barra.classList.add("barra-descanso");
+    const progreso = document.createElement("div");
+    barra.appendChild(progreso);
+    cuerpo.appendChild(barra);
+  }
+
+  agregarFila(1);
+
+  const btnAdd = document.createElement("button");
+  btnAdd.textContent = "AÑADIR SERIE";
+  btnAdd.className = "anadir-serie";
+  btnAdd.onclick = () => agregarFila(tabla.querySelectorAll("tbody tr").length / 2 + 1);
+
+  contenedor.appendChild(tabla);
+  contenedor.appendChild(btnAdd);
+}
+
+// MARCAR COMO HECHO
+function marcarHecho(btn) {
+  const fila = btn.closest("tr");
+  fila.classList.add("realizado");
+  iniciarDescanso(fila.nextElementSibling.querySelector("div"));
+}
+
+// TIMER DESCANSO
+function iniciarDescanso(barra) {
+  const segundos = parseInt(document.getElementById("tiempo-descanso").value);
+  let actual = 0;
+  const timer = setInterval(() => {
+    actual++;
+    barra.style.width = `${(actual / segundos) * 100}%`;
+    if (actual >= segundos) clearInterval(timer);
+  }, 1000);
+}
+
+// FINALIZAR ENTRENAMIENTO
+function finalizarSesion() {
+  document.getElementById("popup-finalizar").classList.add("show");
+  sumarPuntos(10);
+  actualizarCalendario();
+}
+
+// CANCELAR ENTRENAMIENTO
 function cancelarEntrenamiento() {
   location.reload();
 }
 
-// Finalizar entrenamiento
-function finalizarSesion() {
-  temporizadorActivo = false;
-  document.getElementById("popup-finalizar").classList.add("show");
-}
-
+// POPUP FINAL
 function cerrarPopup() {
   document.getElementById("popup-finalizar").classList.remove("show");
-  guardarSesion();
 }
 
-function guardarSesion() {
-  const fecha = new Date();
-  const dia = fecha.getDate();
-  document.querySelectorAll("#calendario-interactivo button")[dia - 1].style.backgroundColor = "#deff77";
-  sumarPuntos(10);
-  racha++;
-  actualizarStats();
-}
-
-// Cargar ejercicios
-function cargarEjerciciosGrupo() {
-  const grupo = document.getElementById("grupo-muscular").value;
-  const selector = document.getElementById("selector-ejercicio");
-  const contenedor = document.getElementById("contenedor-tablas");
-  selector.innerHTML = "";
-  contenedor.innerHTML = "";
-
-  if (!grupo) return;
-
-  const ejercicios = obtenerEjercicios(grupo);
-  const select = document.createElement("select");
-  select.innerHTML = `<option value="">-- Elegir Ejercicio --</option>` +
-    ejercicios.map(ej => `<option value="${ej}">${ej}</option>`).join("");
-  select.addEventListener("change", e => crearTablaEjercicio(e.target.value));
-  selector.appendChild(select);
-}
-
-function obtenerEjercicios(grupo) {
-  const base = {
-    pecho: ["Press Banca", "Press Inclinado", "Aperturas", "Fondos", "Crossover"],
-    espalda: ["Dominadas", "Remo", "Jalón al Pecho", "Peso muerto", "Pull over"],
-    piernas: ["Sentadillas", "Prensa", "Zancadas", "Extensión Cuádriceps", "Curl femoral"],
-    brazos: ["Curl Biceps", "Press Francés", "Martillo", "Polea", "Curl concentrado"],
-    hombros: ["Press Militar", "Elevaciones Laterales", "Pájaros", "Arnold Press", "Face Pull"],
-    core: ["Plancha", "Crunch", "Elevaciones Piernas", "Russian Twist", "Mountain Climbers"]
+// IMAGEN PERFIL
+function mostrarImagenPerfil(event) {
+  const archivo = event.target.files[0];
+  const lector = new FileReader();
+  lector.onload = e => {
+    document.querySelector("#preview-foto img").src = e.target.result;
   };
-  return base[grupo] || [];
+  lector.readAsDataURL(archivo);
 }
 
-function crearTablaEjercicio(nombre) {
-  const tabla = document.createElement("table");
-  tabla.innerHTML = `<thead><tr><th>Serie</th><th>Kg Anterior</th><th>Reps Anteriores</th><th>Kg Hoy</th><th>Reps Hoy</th><th>✔</th></tr></thead>`;
-  const tbody = document.createElement("tbody");
-
-  for (let i = 1; i <= 3; i++) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${i}</td>
-      <td>${Math.floor(Math.random() * 40 + 20)}</td>
-      <td>${Math.floor(Math.random() * 8 + 4)}</td>
-      <td><input type="number" /></td>
-      <td><input type="number" /></td>
-      <td><button class="hecho" onclick="marcarRealizado(this, ${i})">HECHO</button></td>
-    `;
-    tbody.appendChild(tr);
-
-    const barra = document.createElement("div");
-    barra.className = "barra-descanso";
-    barra.innerHTML = `<div style="width: 0%"></div>`;
-    tbody.appendChild(barra);
-  }
-
-  tabla.appendChild(tbody);
-
-  const div = document.createElement("div");
-  div.appendChild(document.createElement("h4")).textContent = nombre;
-  div.appendChild(tabla);
-
-  const btnSerie = document.createElement("button");
-  btnSerie.textContent = "Añadir Serie";
-  btnSerie.classList.add("anadir-serie");
-  btnSerie.onclick = () => crearNuevaFila(tabla);
-  div.appendChild(btnSerie);
-
-  document.getElementById("contenedor-tablas").appendChild(div);
-}
-
-function crearNuevaFila(tabla) {
-  const i = tabla.rows.length;
-  const fila = tabla.insertRow();
-  fila.innerHTML = `
-    <td>${i}</td>
-    <td>${Math.floor(Math.random() * 30 + 10)}</td>
-    <td>${Math.floor(Math.random() * 6 + 4)}</td>
-    <td><input type="number" /></td>
-    <td><input type="number" /></td>
-    <td><button class="hecho" onclick="marcarRealizado(this, ${i})">HECHO</button></td>
-  `;
-  const barra = document.createElement("div");
-  barra.className = "barra-descanso";
-  barra.innerHTML = `<div style="width: 0%"></div>`;
-  tabla.appendChild(barra);
-}
-
-function marcarRealizado(btn, index) {
-  btn.classList.add("realizado");
-  const barra = btn.closest("tbody").querySelectorAll(".barra-descanso > div")[index - 1];
-  if (barra) iniciarCuentaAtras(barra);
-}
-
-function iniciarCuentaAtras(barra) {
-  let tiempo = tiempoDescanso;
-  const total = tiempo;
-  const intervalo = setInterval(() => {
-    tiempo--;
-    barra.style.width = `${((total - tiempo) / total) * 100}%`;
-    if (tiempo <= 0) clearInterval(intervalo);
-  }, 1000);
-}
-
-// Desplegables
+// DESPLEGABLES
 function toggleDesplegable(id) {
-  document.getElementById(id).classList.toggle("active");
+  const box = document.getElementById(id);
+  box.classList.toggle("active");
 }
 
-// Calendario
-function generarCalendario() {
-  const hoy = new Date();
-  const dias = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate();
-  document.getElementById("mes-calendario").textContent = hoy.toLocaleDateString("es-ES", { month: "long", year: "numeric" });
-
+// CALENDARIO
+function actualizarCalendario() {
   const calendario = document.getElementById("calendario-interactivo");
   calendario.innerHTML = "";
+  const hoy = new Date();
+  const dia = hoy.getDate();
+  const mes = hoy.toLocaleString("default", { month: "long" });
+  document.getElementById("mes-calendario").textContent = mes.toUpperCase();
 
-  for (let i = 1; i <= dias; i++) {
+  for (let i = 1; i <= 31; i++) {
     const btn = document.createElement("button");
     btn.textContent = i;
+    if (i === dia) btn.style.backgroundColor = "var(--color-acento)";
     btn.onclick = () => mostrarSesionDia(i);
     calendario.appendChild(btn);
   }
 }
 
 function mostrarSesionDia(dia) {
-  const container = document.getElementById("graficas-por-dia");
-  container.innerHTML = `<p>Sesión del día ${dia}: ejercicios realizados, intensidad y notas se mostrarán aquí.</p>`;
+  const cont = document.getElementById("graficas-por-dia");
+  cont.innerHTML = `<p>Entrenamiento del día ${dia}:</p><p>[Gráficas por grupo muscular]</p>`;
 }
 
-// Gamificación
+// PUNTOS Y NIVELES
 function sumarPuntos(cantidad) {
   puntos += cantidad;
-  if (puntos >= nivel * 100) {
-    puntos -= nivel * 100;
+  document.getElementById("puntos-usuario").textContent = puntos;
+  racha++;
+  document.getElementById("racha-usuario").textContent = racha;
+
+  const umbralNivel = 100;
+  if (puntos >= nivel * umbralNivel) {
     nivel++;
-    logros.push(`Nivel ${nivel} alcanzado`);
+    document.getElementById("nivel-usuario").textContent = nivel;
+    mostrarLogro(`¡Nivel ${nivel} alcanzado!`);
   }
-  actualizarStats();
+
+  document.querySelector("#barra-progreso-nivel::after")?.style?.setProperty("width", `${(puntos % umbralNivel)}%`);
 }
 
-function actualizarStats() {
-  document.getElementById("puntos-usuario").textContent = puntos;
-  document.getElementById("racha-usuario").textContent = racha;
-  document.getElementById("nivel-usuario").textContent = nivel;
-  document.getElementById("barra-progreso-nivel").style.setProperty("width", `${(puntos / (nivel * 100)) * 100}%`);
-
-  const contenedor = document.getElementById("logros-visual");
-  contenedor.innerHTML = "";
-  logros.forEach(l => {
-    const badge = document.createElement("div");
-    badge.className = "logro";
-    badge.textContent = l;
-    contenedor.appendChild(badge);
-  });
+function mostrarLogro(texto) {
+  const logro = document.createElement("div");
+  logro.className = "logro";
+  logro.textContent = texto;
+  document.getElementById("logros-visual").appendChild(logro);
 }
