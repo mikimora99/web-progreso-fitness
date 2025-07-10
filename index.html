@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mi Progreso Fitness</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -51,9 +51,20 @@
     <section id="usuario">
       <h2>👤 PERFIL DE USUARIO</h2>
       <div id="perfil">
-        <label>Nombre: <input type="text" id="nombre-usuario" placeholder="TU NOMBRE" /></label><br />
+        <label>Nombre: <input type="text" id="nombre-usuario" placeholder="TU NOMBRE" /></label><br/>
         <label>Foto de perfil: <input type="file" id="foto-usuario" accept="image/*" /></label>
         <div id="preview-foto"></div>
+
+        <h3>📏 MEDIDAS CORPORALES</h3>
+        <label>Altura (cm): <input type="number" id="altura" /></label><br/>
+        <label>Peso (kg): <input type="number" id="peso" /></label><br/>
+        <label>% Grasa corporal: <input type="number" id="grasa" /></label><br/>
+        <label>Brazo (cm): <input type="number" id="brazo" /></label><br/>
+        <label>Pierna (cm): <input type="number" id="pierna" /></label><br/>
+        <label>Pecho (cm): <input type="number" id="pecho" /></label><br/>
+
+        <h3>⏱️ CONFIGURACIÓN DE DESCANSO</h3>
+        <label>Segundos entre series: <input type="number" id="tiempo-descanso" value="30" /></label><br/>
       </div>
 
       <h3>📅 CALENDARIO</h3>
@@ -68,6 +79,25 @@
       <h2>📝 MI DIARIO</h2>
       <p>Próximamente: cualquier usuario podrá escribir aquí sus reflexiones y rutinas.</p>
     </section>
+
+    <!-- POPUP FINALIZAR SESIÓN -->
+    <div id="popup-finalizar" class="popup">
+      <div class="popup-content">
+        <h3>¿Cómo fue tu entrenamiento?</h3>
+        <label>Intensidad (0-10): <input type="range" min="0" max="10" /></label><br/>
+        <label>Momento del día: 
+          <select>
+            <option>Mañana</option>
+            <option>Tarde</option>
+            <option>Noche</option>
+          </select>
+        </label><br/>
+        <label>Comentario: <input type="text" /></label><br/>
+        <label>Foto: <input type="file" accept="image/*" /></label><br/><br/>
+        <button onclick="cerrarPopup()">GUARDAR</button>
+      </div>
+    </div>
+
   </main>
 
   <script src="script.js"></script>
