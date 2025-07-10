@@ -1,9 +1,13 @@
+// ⚙️ CÓDIGO FUNCIONAL DE LA APP DE ENTRENAMIENTO
+
 let segundos = 0;
 let temporizadorActivo = false;
 let intervalo;
 let ejercicios = [];
 let historial = JSON.parse(localStorage.getItem("historial")) || [];
 let sesionesAnteriores = JSON.parse(localStorage.getItem("ultimasSesiones")) || {};
+let extraDatos = JSON.parse(localStorage.getItem("extraDatos")) || [];
+let ejercicioHabilitado = false;
 
 const bibliotecaEjercicios = {
   pecho: ["Press banca", "Press inclinado", "Aperturas con mancuernas"],
@@ -17,6 +21,8 @@ const bibliotecaEjercicios = {
 function iniciarTemporizador() {
   if (!temporizadorActivo) {
     temporizadorActivo = true;
+    ejercicioHabilitado = true;
+    document.getElementById("grupo-muscular").disabled = false;
     intervalo = setInterval(() => {
       segundos++;
       document.getElementById("temporizador").textContent = formatearTiempo(segundos);
@@ -35,9 +41,11 @@ function mostrarSeccion(id) {
   document.querySelectorAll("section").forEach(s => s.classList.remove("visible"));
   document.getElementById(id).classList.add("visible");
   if (id === "calendario") mostrarCalendario();
+  if (id === "usuario") mostrarPerfil();
 }
 
 function cargarEjerciciosGrupo() {
+  if (!ejercicioHabilitado) return;
   const grupo = document.getElementById("grupo-muscular").value;
   const selector = document.getElementById("selector-ejercicio");
   const contenedor = document.getElementById("contenedor-tablas");
@@ -47,7 +55,7 @@ function cargarEjerciciosGrupo() {
   if (!grupo || !bibliotecaEjercicios[grupo]) return;
 
   const select = document.createElement("select");
-  select.innerHTML = `<option value="">-- Elige un ejercicio --</option>` +
+  select.innerHTML = `<option value="">-- ELIGE UN EJERCICIO --</option>` +
     bibliotecaEjercicios[grupo].map(ej => `<option value="${ej}">${ej}</option>`).join("");
 
   select.onchange = () => {
@@ -68,11 +76,11 @@ function agregarTablaEjercicio(nombre) {
       <tr><th colspan="5">${nombre}</th></tr>
       <tr><th>Anterior</th><th>Peso</th><th>Reps</th><th>✅</th><th>🗑</th></tr>
     </thead>
-    <tbody id="cuerpo-${nombre.replace(/\s+/g, '-')}"></tbody>
+    <tbody id="cuerpo-${nombre.replace(/\\s+/g, '-')}"></tbody>
   `;
 
   const btnAdd = document.createElement("button");
-  btnAdd.textContent = "+ Añadir serie";
+  btnAdd.textContent = "+ AÑADIR SERIE";
   btnAdd.className = "anadir-serie";
   btnAdd.onclick = () => anadirSerie(nombre, anterior);
 
@@ -84,7 +92,7 @@ function agregarTablaEjercicio(nombre) {
 }
 
 function anadirSerie(nombre, anterior) {
-  const cuerpo = document.getElementById(`cuerpo-${nombre.replace(/\s+/g, '-')}`);
+  const cuerpo = document.getElementById(`cuerpo-${nombre.replace(/\\s+/g, '-')}`);
   const fila = document.createElement("tr");
 
   fila.innerHTML = `
@@ -127,9 +135,11 @@ function cancelarEntrenamiento() {
   clearInterval(intervalo);
   segundos = 0;
   temporizadorActivo = false;
+  ejercicioHabilitado = false;
   document.getElementById("temporizador").textContent = "00:00:00";
   document.getElementById("contenedor-tablas").innerHTML = "";
   document.getElementById("selector-ejercicio").innerHTML = "";
+  document.getElementById("grupo-muscular").disabled = true;
 }
 
 function finalizarSesion() {
@@ -145,13 +155,17 @@ function finalizarSesion() {
 
   localStorage.setItem("ultimasSesiones", JSON.stringify(sesionesAnteriores));
 
-  historial.push({
-    fecha: new Date().toISOString().split("T")[0],
-    ejercicios: JSON.parse(JSON.stringify(ejercicios)),
-    tiempo: formatearTiempo(segundos)
-  });
+  const fecha = new Date().toISOString().split("T")[0];
+  historial.push({ fecha, ejercicios: JSON.parse(JSON.stringify(ejercicios)), tiempo: formatearTiempo(segundos) });
 
+  const intensidad = prompt("Intensidad del 0 al 10?");
+  const momento = prompt("¿Mañana, tarde o noche?");
+  const comentario = prompt("Comentario adicional:");
+
+  extraDatos.push({ fecha, intensidad, momento, comentario });
   localStorage.setItem("historial", JSON.stringify(historial));
+  localStorage.setItem("extraDatos", JSON.stringify(extraDatos));
+
   cancelarEntrenamiento();
 }
 
@@ -161,7 +175,7 @@ function mostrarCalendario() {
   const dias = historial.map(h => h.fecha);
   dias.reverse().forEach(fecha => {
     const btn = document.createElement("button");
-    btn.textContent = fecha;
+    btn.textContent = fecha.split("-")[2];
     btn.onclick = () => mostrarGraficaPorDia(fecha);
     contenedor.appendChild(btn);
   });
@@ -196,7 +210,7 @@ function mostrarGraficaPorDia(fecha) {
         datasets: [{
           label: `Grupo: ${grupo}`,
           data: datos.map(d => d.totalKg),
-          backgroundColor: "#4CAF50"
+          backgroundColor: "#deff77"
         }]
       },
       options: {
@@ -206,4 +220,39 @@ function mostrarGraficaPorDia(fecha) {
       }
     });
   });
+}
+
+function mostrarPerfil() {
+  const info = document.getElementById("info-extra-usuario");
+  info.innerHTML = "";
+  extraDatos.forEach(d => {
+    const div = document.createElement("div");
+    div.innerHTML = `<p><strong>${d.fecha}</strong><br> Intensidad: ${d.intensidad}/10<br> Momento: ${d.momento}<br> Comentario: ${d.comentario}</p>`;
+    info.appendChild(div);
+  });
+
+  const inputNombre = document.getElementById("nombre-usuario");
+  const inputFoto = document.getElementById("foto-usuario");
+  const preview = document.getElementById("preview-foto");
+
+  inputFoto.onchange = () => {
+    const file = inputFoto.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      localStorage.setItem("fotoPerfil", reader.result);
+      preview.innerHTML = `<img src="${reader.result}" alt="Foto perfil">`;
+    };
+    if (file) reader.readAsDataURL(file);
+  };
+
+  inputNombre.onchange = () => {
+    localStorage.setItem("nombrePerfil", inputNombre.value);
+  };
+
+  if (localStorage.getItem("fotoPerfil")) {
+    preview.innerHTML = `<img src="${localStorage.getItem("fotoPerfil")}" alt="Foto perfil">`;
+  }
+  if (localStorage.getItem("nombrePerfil")) {
+    inputNombre.value = localStorage.getItem("nombrePerfil");
+  }
 }
