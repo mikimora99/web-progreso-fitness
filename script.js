@@ -5,6 +5,8 @@ let historial = {};
 let usuario = {
   nombre: "",
   foto: "",
+  descanso: 30,
+  medidas: {},
 };
 
 function mostrarSeccion(id) {
@@ -35,27 +37,17 @@ function cancelarEntrenamiento() {
 
 function finalizarSesion() {
   clearInterval(temporizadorInterval);
+  document.getElementById("popup-finalizar").classList.add("show");
+}
+
+function cerrarPopup() {
   const fecha = new Date().toISOString().split('T')[0];
   if (!historial[fecha]) historial[fecha] = [];
   historial[fecha].push(...entrenamientos);
   actualizarCalendario();
   cancelarEntrenamiento();
   entrenamientos = [];
-  document.getElementById("info-extra-usuario").innerHTML += `
-    <div>
-      <strong>${fecha}</strong><br>
-      Intensidad: <input type="range" min="0" max="10" /><br>
-      Momento: 
-      <select>
-        <option>Mañana</option>
-        <option>Tarde</option>
-        <option>Noche</option>
-      </select><br>
-      Comentario: <input type="text" /><br>
-      Foto: <input type="file" accept="image/*" />
-    </div>
-    <hr>
-  `;
+  document.getElementById("popup-finalizar").classList.remove("show");
 }
 
 function cargarEjerciciosGrupo() {
@@ -112,6 +104,22 @@ function agregarTablaEjercicio() {
 
 function marcarHecho(boton) {
   boton.classList.add("realizado");
+  iniciarDescanso();
+}
+
+function iniciarDescanso() {
+  let descanso = parseInt(document.getElementById("tiempo-descanso").value) || 30;
+  const originalText = document.title;
+  let contador = descanso;
+  const intervalo = setInterval(() => {
+    document.title = `Descanso: ${contador}s`;
+    contador--;
+    if (contador < 0) {
+      clearInterval(intervalo);
+      document.title = originalText;
+      alert("¡Tiempo de descanso terminado!");
+    }
+  }, 1000);
 }
 
 function actualizarCalendario() {
