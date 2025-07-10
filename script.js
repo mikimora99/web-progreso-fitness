@@ -1,240 +1,224 @@
-let tiempo = 0;
-let temporizadorInterval = null;
-let entrenamientos = [];
-let historial = {};
-let usuario = {
-  nombre: "",
-  foto: "",
-  descanso: 30,
-  medidas: {},
-  puntos: 0,
-  nivel: 1,
-  racha: 0,
-  ultimaFecha: ""
+// Variables globales
+let sesionIniciada = false;
+let temporizadorActivo = false;
+let tiempoDescanso = 30;
+let progresoNivel = 0;
+let puntos = 0;
+let racha = 0;
+let nivel = 1;
+const logros = [];
+
+// DOMContentLoaded
+window.onload = () => {
+  generarCalendario();
+  document.getElementById("tiempo-descanso").addEventListener("input", e => {
+    tiempoDescanso = e.target.value;
+  });
 };
 
+// Mostrar secciones
 function mostrarSeccion(id) {
-  document.querySelectorAll("section").forEach(sec => sec.classList.remove("visible"));
+  document.querySelectorAll("main section").forEach(sec => sec.classList.remove("visible"));
   document.getElementById(id).classList.add("visible");
-  if (id === "usuario") actualizarCalendario();
 }
 
+// Iniciar entrenamiento
 function iniciarTemporizador() {
+  sesionIniciada = true;
   document.getElementById("grupo-muscular").disabled = false;
-  tiempo = 0;
-  temporizadorInterval = setInterval(() => {
-    tiempo++;
-    const horas = String(Math.floor(tiempo / 3600)).padStart(2, '0');
-    const minutos = String(Math.floor((tiempo % 3600) / 60)).padStart(2, '0');
-    const segundos = String(tiempo % 60).padStart(2, '0');
-    document.getElementById("temporizador").textContent = `${horas}:${minutos}:${segundos}`;
+  document.getElementById("temporizador").textContent = "00:00:00";
+  temporizadorActivo = true;
+  temporizador();
+}
+
+function temporizador() {
+  let seg = 0;
+  setInterval(() => {
+    if (!temporizadorActivo) return;
+    seg++;
+    const h = String(Math.floor(seg / 3600)).padStart(2, "0");
+    const m = String(Math.floor((seg % 3600) / 60)).padStart(2, "0");
+    const s = String(seg % 60).padStart(2, "0");
+    document.getElementById("temporizador").textContent = `${h}:${m}:${s}`;
   }, 1000);
 }
 
+// Cancelar entrenamiento
 function cancelarEntrenamiento() {
-  clearInterval(temporizadorInterval);
-  document.getElementById("grupo-muscular").disabled = true;
-  document.getElementById("grupo-muscular").value = "";
-  document.getElementById("selector-ejercicio").innerHTML = "";
-  document.getElementById("contenedor-tablas").innerHTML = "";
-  document.getElementById("temporizador").textContent = "00:00:00";
+  location.reload();
 }
 
+// Finalizar entrenamiento
 function finalizarSesion() {
-  clearInterval(temporizadorInterval);
+  temporizadorActivo = false;
   document.getElementById("popup-finalizar").classList.add("show");
 }
 
 function cerrarPopup() {
-  const fecha = new Date().toISOString().split('T')[0];
-  if (!historial[fecha]) historial[fecha] = [];
-  historial[fecha].push(...entrenamientos);
-  entrenamientos = [];
-
-  // Lógica gamificada
-  usuario.puntos += 5;
-  if (usuario.ultimaFecha) {
-    const ayer = new Date(usuario.ultimaFecha);
-    ayer.setDate(ayer.getDate() + 1);
-    if (fecha === ayer.toISOString().split('T')[0]) {
-      usuario.racha++;
-      usuario.puntos += 3;
-    } else {
-      usuario.racha = 1;
-    }
-  } else {
-    usuario.racha = 1;
-  }
-  usuario.ultimaFecha = fecha;
-  actualizarNivel();
-  actualizarCalendario();
-  actualizarStats();
-  cancelarEntrenamiento();
   document.getElementById("popup-finalizar").classList.remove("show");
+  guardarSesion();
 }
 
+function guardarSesion() {
+  const fecha = new Date();
+  const dia = fecha.getDate();
+  document.querySelectorAll("#calendario-interactivo button")[dia - 1].style.backgroundColor = "#deff77";
+  sumarPuntos(10);
+  racha++;
+  actualizarStats();
+}
+
+// Cargar ejercicios
 function cargarEjerciciosGrupo() {
   const grupo = document.getElementById("grupo-muscular").value;
-  if (!grupo) return;
-  const ejerciciosPorGrupo = {
-    pecho: ["Press banca", "Aperturas", "Fondos"],
-    espalda: ["Dominadas", "Remo", "Jalón"],
-    piernas: ["Sentadilla", "Prensa", "Zancadas"],
-    brazos: ["Curl bíceps", "Extensión tríceps", "Martillo"],
-    hombros: ["Press militar", "Elevaciones laterales", "Pájaros"],
-    core: ["Crunch", "Planchas", "Elevaciones piernas"]
-  };
   const selector = document.getElementById("selector-ejercicio");
-  selector.innerHTML = `<select id="ejercicio-grupo" onchange="agregarTablaEjercicio()">
-    <option value="">-- ELEGIR EJERCICIO --</option>
-    ${ejerciciosPorGrupo[grupo].map(e => `<option value="${e}">${e}</option>`).join("")}
-  </select>`;
+  const contenedor = document.getElementById("contenedor-tablas");
+  selector.innerHTML = "";
+  contenedor.innerHTML = "";
+
+  if (!grupo) return;
+
+  const ejercicios = obtenerEjercicios(grupo);
+  const select = document.createElement("select");
+  select.innerHTML = `<option value="">-- Elegir Ejercicio --</option>` +
+    ejercicios.map(ej => `<option value="${ej}">${ej}</option>`).join("");
+  select.addEventListener("change", e => crearTablaEjercicio(e.target.value));
+  selector.appendChild(select);
 }
 
-function agregarTablaEjercicio() {
-  const nombre = document.getElementById("ejercicio-grupo").value;
-  if (!nombre) return;
+function obtenerEjercicios(grupo) {
+  const base = {
+    pecho: ["Press Banca", "Press Inclinado", "Aperturas", "Fondos", "Crossover"],
+    espalda: ["Dominadas", "Remo", "Jalón al Pecho", "Peso muerto", "Pull over"],
+    piernas: ["Sentadillas", "Prensa", "Zancadas", "Extensión Cuádriceps", "Curl femoral"],
+    brazos: ["Curl Biceps", "Press Francés", "Martillo", "Polea", "Curl concentrado"],
+    hombros: ["Press Militar", "Elevaciones Laterales", "Pájaros", "Arnold Press", "Face Pull"],
+    core: ["Plancha", "Crunch", "Elevaciones Piernas", "Russian Twist", "Mountain Climbers"]
+  };
+  return base[grupo] || [];
+}
 
-  const contenedor = document.getElementById("contenedor-tablas");
+function crearTablaEjercicio(nombre) {
   const tabla = document.createElement("table");
-  tabla.innerHTML = `
-    <thead>
-      <tr><th>${nombre}</th><th>KG Ant</th><th>Reps Ant</th><th>KG</th><th>Reps</th><th>✔</th></tr>
-    </thead>
-    <tbody></tbody>
-  `;
-  const tbody = tabla.querySelector("tbody");
-  contenedor.appendChild(tabla);
+  tabla.innerHTML = `<thead><tr><th>Serie</th><th>Kg Anterior</th><th>Reps Anteriores</th><th>Kg Hoy</th><th>Reps Hoy</th><th>✔</th></tr></thead>`;
+  const tbody = document.createElement("tbody");
 
-  const btnAnadir = document.createElement("button");
-  btnAnadir.className = "anadir-serie";
-  btnAnadir.textContent = "+ AÑADIR SERIE";
-  btnAnadir.onclick = () => {
+  for (let i = 1; i <= 3; i++) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${nombre}</td>
-      <td>--</td>
-      <td>--</td>
+      <td>${i}</td>
+      <td>${Math.floor(Math.random() * 40 + 20)}</td>
+      <td>${Math.floor(Math.random() * 8 + 4)}</td>
       <td><input type="number" /></td>
       <td><input type="number" /></td>
-      <td><button class="hecho" onclick="marcarHecho(this)">✔</button></td>
+      <td><button class="hecho" onclick="marcarRealizado(this, ${i})">HECHO</button></td>
     `;
     tbody.appendChild(tr);
-  };
-  contenedor.appendChild(btnAnadir);
+
+    const barra = document.createElement("div");
+    barra.className = "barra-descanso";
+    barra.innerHTML = `<div style="width: 0%"></div>`;
+    tbody.appendChild(barra);
+  }
+
+  tabla.appendChild(tbody);
+
+  const div = document.createElement("div");
+  div.appendChild(document.createElement("h4")).textContent = nombre;
+  div.appendChild(tabla);
+
+  const btnSerie = document.createElement("button");
+  btnSerie.textContent = "Añadir Serie";
+  btnSerie.classList.add("anadir-serie");
+  btnSerie.onclick = () => crearNuevaFila(tabla);
+  div.appendChild(btnSerie);
+
+  document.getElementById("contenedor-tablas").appendChild(div);
 }
 
-function marcarHecho(boton) {
-  boton.classList.add("realizado");
-  usuario.puntos += 1;
-  actualizarStats();
-  iniciarDescanso();
+function crearNuevaFila(tabla) {
+  const i = tabla.rows.length;
+  const fila = tabla.insertRow();
+  fila.innerHTML = `
+    <td>${i}</td>
+    <td>${Math.floor(Math.random() * 30 + 10)}</td>
+    <td>${Math.floor(Math.random() * 6 + 4)}</td>
+    <td><input type="number" /></td>
+    <td><input type="number" /></td>
+    <td><button class="hecho" onclick="marcarRealizado(this, ${i})">HECHO</button></td>
+  `;
+  const barra = document.createElement("div");
+  barra.className = "barra-descanso";
+  barra.innerHTML = `<div style="width: 0%"></div>`;
+  tabla.appendChild(barra);
 }
 
-function iniciarDescanso() {
-  const descanso = parseInt(document.getElementById("tiempo-descanso").value) || 30;
-  let restante = descanso;
-  const originalTitle = document.title;
-  const interval = setInterval(() => {
-    document.title = `⏳ Descanso: ${restante}s`;
-    restante--;
-    if (restante < 0) {
-      clearInterval(interval);
-      document.title = originalTitle;
-      alert("¡Descanso terminado!");
-    }
+function marcarRealizado(btn, index) {
+  btn.classList.add("realizado");
+  const barra = btn.closest("tbody").querySelectorAll(".barra-descanso > div")[index - 1];
+  if (barra) iniciarCuentaAtras(barra);
+}
+
+function iniciarCuentaAtras(barra) {
+  let tiempo = tiempoDescanso;
+  const total = tiempo;
+  const intervalo = setInterval(() => {
+    tiempo--;
+    barra.style.width = `${((total - tiempo) / total) * 100}%`;
+    if (tiempo <= 0) clearInterval(intervalo);
   }, 1000);
 }
 
-function actualizarCalendario() {
-  const calendario = document.getElementById("calendario-interactivo");
-  const mesTexto = document.getElementById("mes-calendario");
-  calendario.innerHTML = "";
+// Desplegables
+function toggleDesplegable(id) {
+  document.getElementById(id).classList.toggle("active");
+}
+
+// Calendario
+function generarCalendario() {
   const hoy = new Date();
-  const año = hoy.getFullYear();
-  const mes = hoy.getMonth();
-  const mesesNombres = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
-  mesTexto.textContent = mesesNombres[mes];
+  const dias = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate();
+  document.getElementById("mes-calendario").textContent = hoy.toLocaleDateString("es-ES", { month: "long", year: "numeric" });
 
-  const primerDia = new Date(año, mes, 1).getDay();
-  const diasMes = new Date(año, mes + 1, 0).getDate();
+  const calendario = document.getElementById("calendario-interactivo");
+  calendario.innerHTML = "";
 
-  for (let i = 0; i < primerDia; i++) {
-    calendario.innerHTML += "<div></div>";
-  }
-
-  for (let dia = 1; dia <= diasMes; dia++) {
-    const fechaStr = `${año}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+  for (let i = 1; i <= dias; i++) {
     const btn = document.createElement("button");
-    btn.textContent = dia;
-    btn.onclick = () => mostrarGrafica(fechaStr);
-    if (historial[fechaStr]) btn.style.backgroundColor = "#deff77";
+    btn.textContent = i;
+    btn.onclick = () => mostrarSesionDia(i);
     calendario.appendChild(btn);
   }
 }
 
-function mostrarGrafica(fecha) {
-  const canvasId = `grafica-${fecha}`;
-  const contenedor = document.getElementById("graficas-por-dia");
-  contenedor.innerHTML = `<canvas id="${canvasId}"></canvas>`;
-  const ejercicios = historial[fecha] || [];
-  const datos = {};
-  ejercicios.forEach(e => {
-    if (!datos[e.nombre]) datos[e.nombre] = { kg: 0, reps: 0 };
-    datos[e.nombre].kg += parseInt(e.kg || 0);
-    datos[e.nombre].reps += parseInt(e.reps || 0);
-  });
+function mostrarSesionDia(dia) {
+  const container = document.getElementById("graficas-por-dia");
+  container.innerHTML = `<p>Sesión del día ${dia}: ejercicios realizados, intensidad y notas se mostrarán aquí.</p>`;
+}
 
-  const ctx = document.getElementById(canvasId).getContext("2d");
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: Object.keys(datos),
-      datasets: [
-        {
-          label: "KG Totales",
-          data: Object.values(datos).map(d => d.kg),
-          backgroundColor: "#deff77"
-        },
-        {
-          label: "Reps Totales",
-          data: Object.values(datos).map(d => d.reps),
-          backgroundColor: "#aaff44"
-        }
-      ]
-    }
-  });
+// Gamificación
+function sumarPuntos(cantidad) {
+  puntos += cantidad;
+  if (puntos >= nivel * 100) {
+    puntos -= nivel * 100;
+    nivel++;
+    logros.push(`Nivel ${nivel} alcanzado`);
+  }
+  actualizarStats();
 }
 
 function actualizarStats() {
-  document.getElementById("puntos-usuario").textContent = usuario.puntos;
-  document.getElementById("racha-usuario").textContent = usuario.racha;
-  document.getElementById("nivel-usuario").textContent = usuario.nivel;
+  document.getElementById("puntos-usuario").textContent = puntos;
+  document.getElementById("racha-usuario").textContent = racha;
+  document.getElementById("nivel-usuario").textContent = nivel;
+  document.getElementById("barra-progreso-nivel").style.setProperty("width", `${(puntos / (nivel * 100)) * 100}%`);
+
+  const contenedor = document.getElementById("logros-visual");
+  contenedor.innerHTML = "";
+  logros.forEach(l => {
+    const badge = document.createElement("div");
+    badge.className = "logro";
+    badge.textContent = l;
+    contenedor.appendChild(badge);
+  });
 }
-
-function actualizarNivel() {
-  const niveles = [0, 100, 250, 500, 1000, 2000, 3500, 5000, 7000];
-  for (let i = niveles.length - 1; i >= 0; i--) {
-    if (usuario.puntos >= niveles[i]) {
-      usuario.nivel = i + 1;
-      break;
-    }
-  }
-}
-
-// Inputs usuario
-document.getElementById("foto-usuario").addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (ev) {
-      document.getElementById("preview-foto").innerHTML = `<img src='${ev.target.result}'/>`;
-      usuario.foto = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-document.getElementById("nombre-usuario").addEventListener("input", (e) => {
-  usuario.nombre = e.target.value.toUpperCase();
-});
