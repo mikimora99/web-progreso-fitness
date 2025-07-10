@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Progreso Fitness</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🏋️ Mi Progreso Fitness</h1>
+    <nav>
+      <button onclick="mostrarSeccion('rutinas')">Rutinas</button>
+      <button onclick="mostrarSeccion('calendario')">Calendario</button>
+      <button onclick="mostrarSeccion('blog')">Blog</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="rutinas" class="visible">
+      <h2>📋 Rutina de Hoy</h2>
+      <button onclick="iniciarTemporizador()">⏱ Iniciar sesión</button>
+      <div id="temporizador">00:00:00</div>
+
+      <form id="formulario-ejercicio">
+        <input type="text" placeholder="Nombre del ejercicio" required />
+        <input type="number" placeholder="Peso (kg)" required />
+        <input type="number" placeholder="Repeticiones" required />
+        <button type="submit">Añadir ejercicio</button>
+      </form>
+
+      <ul id="lista-ejercicios"></ul>
+    </section>
+
+    <section id="calendario">
+      <h2>📆 Progreso en el Calendario</h2>
+      <p>Próximamente: integración de calendario y gráficas de evolución.</p>
+    </section>
+
+    <section id="blog">
+      <h2>📝 Mi Diario</h2>
+      <p>Próximamente: entradas de blog personales, recetas, consejos y más.</p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
