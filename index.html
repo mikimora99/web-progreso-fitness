@@ -3,112 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mi Progreso Fitness</title>
-  <link rel="stylesheet" href="style.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Mi Entrenamiento</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1>🏋️ MI PROGRESO FITNESS</h1>
+    <h1>MI ENTRENAMIENTO</h1>
     <nav>
-      <button onclick="mostrarSeccion('rutinas')">RUTINAS</button>
-      <button onclick="mostrarSeccion('planes')">PLANES</button>
-      <button onclick="mostrarSeccion('usuario')">USUARIO</button>
-      <button onclick="mostrarSeccion('blog')">BLOG</button>
+      <button onclick="mostrarSeccion('inicio')">Inicio</button>
+      <button onclick="mostrarSeccion('usuario')">Usuario</button>
+      <button onclick="mostrarSeccion('blog')">Blog</button>
     </nav>
   </header>
 
   <main>
-    <section id="rutinas" class="visible">
-      <h2>📋 RUTINA DE HOY</h2>
+    <!-- INICIO -->
+    <section id="inicio" class="visible">
+      <h2>Entrenamiento Diario</h2>
+      <button onclick="iniciarTemporizador()">Iniciar Entrenamiento</button>
+      <button onclick="finalizarSesion()">Finalizar Entrenamiento</button>
+      <button onclick="cancelarEntrenamiento()">Cancelar Entrenamiento</button>
       <div id="temporizador">00:00:00</div>
-      <div class="acciones">
-        <button onclick="iniciarTemporizador()">⏱ INICIAR SESIÓN</button>
-        <button onclick="finalizarSesion()">✅ FINALIZAR SESIÓN</button>
-        <button onclick="cancelarEntrenamiento()">🚫 CANCELAR ENTRENAMIENTO</button>
-      </div>
 
-      <h3>🏷️ GRUPO MUSCULAR</h3>
+      <h3>Grupo Muscular</h3>
       <select id="grupo-muscular" onchange="cargarEjerciciosGrupo()" disabled>
-        <option value="">-- SELECCIONA UNO --</option>
-        <option value="pecho">PECHO</option>
-        <option value="espalda">ESPALDA</option>
-        <option value="piernas">PIERNAS</option>
-        <option value="brazos">BRAZOS</option>
-        <option value="hombros">HOMBROS</option>
-        <option value="core">CORE</option>
+        <option value="">-- Elegir Grupo --</option>
+        <option value="pecho">Pecho</option>
+        <option value="espalda">Espalda</option>
+        <option value="piernas">Piernas</option>
+        <option value="brazos">Brazos</option>
+        <option value="hombros">Hombros</option>
+        <option value="core">Core</option>
       </select>
 
       <div id="selector-ejercicio"></div>
       <div id="contenedor-tablas"></div>
     </section>
 
-    <section id="planes">
-      <h2>📆 PLANES DE ENTRENAMIENTO</h2>
-      <p>Muy pronto podrás elegir entre distintos planes personalizados.</p>
-    </section>
-
+    <!-- USUARIO -->
     <section id="usuario">
-      <h2>👤 PERFIL DE USUARIO</h2>
-      <div id="perfil">
-        <label>Nombre: <input type="text" id="nombre-usuario" placeholder="TU NOMBRE" /></label><br/>
-        <label>Foto de perfil: <input type="file" id="foto-usuario" accept="image/*" /></label>
-        <div id="preview-foto"></div>
+      <h2>Perfil de Usuario</h2>
+      <input type="file" id="foto-usuario" accept="image/*" />
+      <div id="preview-foto"></div>
+      <input type="text" id="nombre-usuario" placeholder="Tu nombre" />
 
-        <h3>📏 MEDIDAS CORPORALES</h3>
-        <div class="medidas-grid">
-          <label>Altura (cm): <input type="number" id="altura" /></label>
-          <label>Peso (kg): <input type="number" id="peso" /></label>
-          <label>% Grasa: <input type="number" id="grasa" /></label>
-          <label>Brazo Izq (cm): <input type="number" id="brazo-izq" /></label>
-          <label>Brazo Dcho (cm): <input type="number" id="brazo-dcho" /></label>
-          <label>Pierna Izq (cm): <input type="number" id="pierna-izq" /></label>
-          <label>Pierna Dcha (cm): <input type="number" id="pierna-dcho" /></label>
-          <label>Pecho (cm): <input type="number" id="pecho" /></label>
-        </div>
-
-        <h3>⏱️ CONFIGURACIÓN DE DESCANSO</h3>
-        <label>Segundos entre series: <input type="number" id="tiempo-descanso" value="30" /></label><br/>
+      <h3 onclick="toggleDesplegable('configuracion')">▼ CONFIGURACIÓN</h3>
+      <div id="configuracion" class="desplegable">
+        <label for="tiempo-descanso">Tiempo de Descanso (seg):</label>
+        <input type="range" id="tiempo-descanso" min="10" max="180" value="30" />
       </div>
 
-      <h3>📅 CALENDARIO</h3>
-      <div id="mes-calendario"></div>
-      <div id="calendario-interactivo" class="grid-calendario"></div>
-      <div id="graficas-por-dia"></div>
+      <h3 onclick="toggleDesplegable('medidas')">▼ MEDIDAS CORPORALES</h3>
+      <div id="medidas" class="desplegable medidas-grid">
+        <input type="number" placeholder="Altura (cm)" />
+        <input type="number" placeholder="Peso (kg)" />
+        <input type="number" placeholder="Brazo Izq (cm)" />
+        <input type="number" placeholder="Brazo Der (cm)" />
+        <input type="number" placeholder="Pierna Izq (cm)" />
+        <input type="number" placeholder="Pierna Der (cm)" />
+        <input type="number" placeholder="Cintura (cm)" />
+        <input type="number" placeholder="% Grasa Corporal" />
+      </div>
 
-      <h3>📊 ESTADÍSTICAS GAMIFICADAS</h3>
-      <p>NIVEL: <span id="nivel-usuario">1</span></p>
-      <p>PUNTOS: <span id="puntos-usuario">0</span></p>
-      <p>RACHA: <span id="racha-usuario">0</span> días seguidos</p>
+      <h3 onclick="toggleDesplegable('calendario')">▼ CALENDARIO</h3>
+      <div id="calendario" class="desplegable">
+        <div id="mes-calendario"></div>
+        <div id="calendario-interactivo" class="grid-calendario"></div>
+        <div id="graficas-por-dia"></div>
+      </div>
 
-      <h3>📝 HISTORIAL DE SESIONES</h3>
-      <div id="info-extra-usuario"></div>
+      <h3 onclick="toggleDesplegable('stats')">▼ ESTADÍSTICAS</h3>
+      <div id="stats" class="desplegable">
+        <p>Puntos: <span id="puntos-usuario">0</span></p>
+        <p>Racha: <span id="racha-usuario">0</span></p>
+        <p>Nivel: <span id="nivel-usuario">1</span></p>
+        <div id="barra-progreso-nivel"></div>
+        <div id="logros-visual"></div>
+      </div>
     </section>
 
+    <!-- BLOG -->
     <section id="blog">
-      <h2>📝 MI DIARIO</h2>
-      <p>Próximamente: cualquier usuario podrá escribir aquí sus reflexiones y rutinas.</p>
-    </section>
-
-    <!-- POPUP FINALIZAR SESIÓN -->
-    <div id="popup-finalizar" class="popup">
-      <div class="popup-content">
-        <h3>¿Cómo fue tu entrenamiento?</h3>
-        <label>Intensidad (0-10): <input type="range" min="0" max="10" /></label><br/>
-        <label>Momento del día: 
-          <select>
-            <option>Mañana</option>
-            <option>Tarde</option>
-            <option>Noche</option>
-          </select>
-        </label><br/>
-        <label>Comentario: <input type="text" /></label><br/>
-        <label>Foto: <input type="file" accept="image/*" /></label><br/><br/>
-        <button onclick="cerrarPopup()">GUARDAR</button>
+      <h2>Blog de Usuarios</h2>
+      <p>Cualquier usuario puede compartir su experiencia o consejos. ¡Anímate a escribir!</p>
+      <button onclick="alert('Próximamente podrás subir tu propio blog')">Escribe tu blog</button>
+      <div id="blogs-publicados">
+        <!-- Entradas futuras -->
       </div>
-    </div>
+    </section>
   </main>
 
+  <!-- POPUP FINALIZAR -->
+  <div id="popup-finalizar" class="popup">
+    <div class="popup-content">
+      <h3>Finalizar Entrenamiento</h3>
+      <p>¿Cómo fue tu entrenamiento?</p>
+      <label>Intensidad (0-10): <input type="number" min="0" max="10" /></label>
+      <label>Turno:
+        <select>
+          <option>Mañana</option>
+          <option>Tarde</option>
+          <option>Noche</option>
+        </select>
+      </label>
+      <label>Comentario: <input type="text" /></label>
+      <button onclick="cerrarPopup()">Guardar</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
