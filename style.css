@@ -1,32 +1,34 @@
 body {
-  font-family: 'Arial', sans-serif;
   margin: 0;
+  font-family: sans-serif;
   background-color: #0f1e29;
-  color: #deff77;
+  color: white;
   text-transform: uppercase;
 }
 
 header {
-  background-color: #0f1e29;
-  color: #deff77;
-  padding: 1rem;
+  background-color: #deff77;
+  color: #0f1e29;
+  padding: 10px;
   text-align: center;
 }
 
+nav {
+  margin-top: 10px;
+}
+
 nav button {
-  margin: 0.3rem;
-  padding: 0.5rem 1rem;
-  font-weight: bold;
-  border-radius: 25px;
+  margin: 0 5px;
+  background-color: #0f1e29;
+  color: #deff77;
   border: none;
-  background-color: #deff77;
-  color: #0f1e29;
+  padding: 10px 15px;
+  border-radius: 15px;
   cursor: pointer;
-  text-transform: uppercase;
 }
 
 main {
-  padding: 1rem 2rem;
+  padding: 20px;
 }
 
 section {
@@ -37,115 +39,108 @@ section.visible {
   display: block;
 }
 
-.acciones button {
-  margin: 0.5rem 0.5rem 1rem 0;
-  border-radius: 25px;
+h2, h3 {
+  color: #deff77;
+}
+
+select, input[type="text"], input[type="number"], input[type="file"], input[type="range"] {
+  padding: 8px;
+  margin: 5px 0 10px;
+  border-radius: 10px;
+  border: none;
+  width: 100%;
+}
+
+button {
   background-color: #deff77;
   color: #0f1e29;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 10px 15px;
+  border-radius: 15px;
+  margin: 5px;
+  cursor: pointer;
   font-weight: bold;
 }
 
-#temporizador {
-  font-size: 1.4rem;
+button.realizado {
+  background-color: #00c853 !important;
+  color: white;
+}
+
+.anadir-serie {
+  margin-top: 10px;
+  background-color: #deff77;
+  color: #0f1e29;
+  border-radius: 15px;
+  padding: 8px 12px;
   font-weight: bold;
-  margin: 1rem 0;
+  display: inline-block;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #1a2b3a;
-  margin-top: 1rem;
-  color: #deff77;
+  margin-top: 10px;
+  background-color: #132631;
 }
 
-th, td {
-  padding: 0.6rem;
+table th, table td {
+  padding: 10px;
   border: 1px solid #deff77;
   text-align: center;
 }
 
-input[type="number"], input[type="text"] {
-  width: 60px;
-  padding: 4px;
-  border-radius: 8px;
-  border: none;
-  background-color: #2a3d50;
-  color: #deff77;
-}
-
-button.hecho {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 25px;
-  cursor: pointer;
-}
-
-button.cancelar {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 25px;
-  cursor: pointer;
-}
-
-button.anadir-serie {
-  background-color: #2196F3;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 25px;
-  cursor: pointer;
-  margin-top: 5px;
-}
-
-.realizado {
-  background-color: #336633 !important;
+#temporizador {
+  font-size: 1.5rem;
+  margin: 15px 0;
+  text-align: center;
 }
 
 .grid-calendario {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
-  padding: 1rem 0;
+  margin: 20px 0;
 }
 
 .grid-calendario button {
-  aspect-ratio: 1 / 1;
+  width: 100%;
+  aspect-ratio: 1;
   border-radius: 50%;
-  background-color: #2a3d50;
+  background-color: #132631;
   color: #deff77;
   border: 1px solid #deff77;
   font-weight: bold;
-  cursor: pointer;
 }
 
-#perfil input[type="text"] {
-  width: 200px;
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 30, 41, 0.9);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-content {
+  background-color: #1b2f3b;
+  padding: 20px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  color: white;
+}
+
+.popup.show {
+  display: flex;
 }
 
 #preview-foto img {
-  max-width: 100px;
-  margin-top: 1rem;
+  max-width: 120px;
   border-radius: 50%;
-}
-
-select, option {
-  background-color: #1a2b3a;
-  color: #deff77;
-  border-radius: 25px;
-  padding: 0.5rem;
-  margin: 0.5rem 0;
-  border: 1px solid #deff77;
-  text-transform: uppercase;
-}
-
-select:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  margin-top: 10px;
 }
