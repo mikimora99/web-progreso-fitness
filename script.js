@@ -7,11 +7,16 @@ let usuario = {
   foto: "",
   descanso: 30,
   medidas: {},
+  puntos: 0,
+  nivel: 1,
+  racha: 0,
+  ultimaFecha: ""
 };
 
 function mostrarSeccion(id) {
   document.querySelectorAll("section").forEach(sec => sec.classList.remove("visible"));
   document.getElementById(id).classList.add("visible");
+  if (id === "usuario") actualizarCalendario();
 }
 
 function iniciarTemporizador() {
@@ -44,9 +49,27 @@ function cerrarPopup() {
   const fecha = new Date().toISOString().split('T')[0];
   if (!historial[fecha]) historial[fecha] = [];
   historial[fecha].push(...entrenamientos);
-  actualizarCalendario();
-  cancelarEntrenamiento();
   entrenamientos = [];
+
+  // Lógica gamificada
+  usuario.puntos += 5;
+  if (usuario.ultimaFecha) {
+    const ayer = new Date(usuario.ultimaFecha);
+    ayer.setDate(ayer.getDate() + 1);
+    if (fecha === ayer.toISOString().split('T')[0]) {
+      usuario.racha++;
+      usuario.puntos += 3;
+    } else {
+      usuario.racha = 1;
+    }
+  } else {
+    usuario.racha = 1;
+  }
+  usuario.ultimaFecha = fecha;
+  actualizarNivel();
+  actualizarCalendario();
+  actualizarStats();
+  cancelarEntrenamiento();
   document.getElementById("popup-finalizar").classList.remove("show");
 }
 
@@ -76,7 +99,7 @@ function agregarTablaEjercicio() {
   const tabla = document.createElement("table");
   tabla.innerHTML = `
     <thead>
-      <tr><th>${nombre}</th><th>KG Anterior</th><th>Reps Anterior</th><th>KG Actual</th><th>Reps</th><th>✔</th></tr>
+      <tr><th>${nombre}</th><th>KG Ant</th><th>Reps Ant</th><th>KG</th><th>Reps</th><th>✔</th></tr>
     </thead>
     <tbody></tbody>
   `;
@@ -97,37 +120,42 @@ function agregarTablaEjercicio() {
       <td><button class="hecho" onclick="marcarHecho(this)">✔</button></td>
     `;
     tbody.appendChild(tr);
-    entrenamientos.push({ nombre, kg: 0, reps: 0, fecha: new Date().toISOString().split('T')[0] });
   };
   contenedor.appendChild(btnAnadir);
 }
 
 function marcarHecho(boton) {
   boton.classList.add("realizado");
+  usuario.puntos += 1;
+  actualizarStats();
   iniciarDescanso();
 }
 
 function iniciarDescanso() {
-  let descanso = parseInt(document.getElementById("tiempo-descanso").value) || 30;
-  const originalText = document.title;
-  let contador = descanso;
-  const intervalo = setInterval(() => {
-    document.title = `Descanso: ${contador}s`;
-    contador--;
-    if (contador < 0) {
-      clearInterval(intervalo);
-      document.title = originalText;
-      alert("¡Tiempo de descanso terminado!");
+  const descanso = parseInt(document.getElementById("tiempo-descanso").value) || 30;
+  let restante = descanso;
+  const originalTitle = document.title;
+  const interval = setInterval(() => {
+    document.title = `⏳ Descanso: ${restante}s`;
+    restante--;
+    if (restante < 0) {
+      clearInterval(interval);
+      document.title = originalTitle;
+      alert("¡Descanso terminado!");
     }
   }, 1000);
 }
 
 function actualizarCalendario() {
   const calendario = document.getElementById("calendario-interactivo");
+  const mesTexto = document.getElementById("mes-calendario");
   calendario.innerHTML = "";
   const hoy = new Date();
   const año = hoy.getFullYear();
   const mes = hoy.getMonth();
+  const mesesNombres = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+  mesTexto.textContent = mesesNombres[mes];
+
   const primerDia = new Date(año, mes, 1).getDay();
   const diasMes = new Date(año, mes + 1, 0).getDate();
 
@@ -139,8 +167,8 @@ function actualizarCalendario() {
     const fechaStr = `${año}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
     const btn = document.createElement("button");
     btn.textContent = dia;
-    if (historial[fechaStr]) btn.style.backgroundColor = "#deff77";
     btn.onclick = () => mostrarGrafica(fechaStr);
+    if (historial[fechaStr]) btn.style.backgroundColor = "#deff77";
     calendario.appendChild(btn);
   }
 }
@@ -164,12 +192,12 @@ function mostrarGrafica(fecha) {
       labels: Object.keys(datos),
       datasets: [
         {
-          label: "KG totales",
+          label: "KG Totales",
           data: Object.values(datos).map(d => d.kg),
           backgroundColor: "#deff77"
         },
         {
-          label: "Reps totales",
+          label: "Reps Totales",
           data: Object.values(datos).map(d => d.reps),
           backgroundColor: "#aaff44"
         }
@@ -178,6 +206,23 @@ function mostrarGrafica(fecha) {
   });
 }
 
+function actualizarStats() {
+  document.getElementById("puntos-usuario").textContent = usuario.puntos;
+  document.getElementById("racha-usuario").textContent = usuario.racha;
+  document.getElementById("nivel-usuario").textContent = usuario.nivel;
+}
+
+function actualizarNivel() {
+  const niveles = [0, 100, 250, 500, 1000, 2000, 3500, 5000, 7000];
+  for (let i = niveles.length - 1; i >= 0; i--) {
+    if (usuario.puntos >= niveles[i]) {
+      usuario.nivel = i + 1;
+      break;
+    }
+  }
+}
+
+// Inputs usuario
 document.getElementById("foto-usuario").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (file) {
