@@ -1,13 +1,14 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
   margin: 0;
-  background: #f9f9f9;
-  color: #222;
+  background-color: #0f1e29;
+  color: #deff77;
+  text-transform: uppercase;
 }
 
 header {
-  background-color: #333;
-  color: #fff;
+  background-color: #0f1e29;
+  color: #deff77;
   padding: 1rem;
   text-align: center;
 }
@@ -16,7 +17,12 @@ nav button {
   margin: 0.3rem;
   padding: 0.5rem 1rem;
   font-weight: bold;
+  border-radius: 25px;
+  border: none;
+  background-color: #deff77;
+  color: #0f1e29;
   cursor: pointer;
+  text-transform: uppercase;
 }
 
 main {
@@ -33,6 +39,12 @@ section.visible {
 
 .acciones button {
   margin: 0.5rem 0.5rem 1rem 0;
+  border-radius: 25px;
+  background-color: #deff77;
+  color: #0f1e29;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
 }
 
 #temporizador {
@@ -44,19 +56,24 @@ section.visible {
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #fff;
+  background-color: #1a2b3a;
   margin-top: 1rem;
+  color: #deff77;
 }
 
 th, td {
   padding: 0.6rem;
-  border: 1px solid #ccc;
+  border: 1px solid #deff77;
   text-align: center;
 }
 
-input[type="number"] {
+input[type="number"], input[type="text"] {
   width: 60px;
   padding: 4px;
+  border-radius: 8px;
+  border: none;
+  background-color: #2a3d50;
+  color: #deff77;
 }
 
 button.hecho {
@@ -64,7 +81,7 @@ button.hecho {
   color: white;
   border: none;
   padding: 4px 8px;
-  border-radius: 5px;
+  border-radius: 25px;
   cursor: pointer;
 }
 
@@ -73,7 +90,7 @@ button.cancelar {
   color: white;
   border: none;
   padding: 4px 8px;
-  border-radius: 5px;
+  border-radius: 25px;
   cursor: pointer;
 }
 
@@ -82,11 +99,38 @@ button.anadir-serie {
   color: white;
   border: none;
   padding: 4px 8px;
-  border-radius: 5px;
+  border-radius: 25px;
   cursor: pointer;
   margin-top: 5px;
 }
 
 .realizado {
-  background-color: #d4edda !important;
+  background-color: #336633 !important;
+}
+
+.grid-calendario {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  padding: 1rem 0;
+}
+
+.grid-calendario button {
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background-color: #2a3d50;
+  color: #deff77;
+  border: 1px solid #deff77;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#perfil input[type="text"] {
+  width: 200px;
+}
+
+#preview-foto img {
+  max-width: 100px;
+  margin-top: 1rem;
+  border-radius: 50%;
 }
