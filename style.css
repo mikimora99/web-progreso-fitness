@@ -1,0 +1,49 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f6f6f6;
+}
+
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+}
+
+nav button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+main {
+  padding: 2rem;
+}
+
+section {
+  display: none;
+}
+
+section.visible {
+  display: block;
+}
+
+form input, form button {
+  display: block;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+
+#temporizador {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
