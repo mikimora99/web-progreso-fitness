@@ -20,10 +20,12 @@
   <main>
     <section id="rutinas" class="visible">
       <h2>📋 Rutina de Hoy</h2>
-      <button onclick="iniciarTemporizador()">⏱ Iniciar sesión</button>
-      <button onclick="finalizarSesion()">✅ Finalizar sesión</button>
-      <button onclick="cancelarEntrenamiento()">🚫 Cancelar entrenamiento</button>
       <div id="temporizador">00:00:00</div>
+      <div class="acciones">
+        <button onclick="iniciarTemporizador()">⏱ Iniciar sesión</button>
+        <button onclick="finalizarSesion()">✅ Finalizar sesión</button>
+        <button onclick="cancelarEntrenamiento()">🚫 Cancelar entrenamiento</button>
+      </div>
 
       <h3>🏷️ Elige un grupo muscular</h3>
       <select id="grupo-muscular" onchange="cargarEjercicios()">
@@ -40,13 +42,13 @@
     </section>
 
     <section id="calendario">
-      <h2>📆 Progreso en el Calendario</h2>
+      <h2>📈 Gráfica de Progreso</h2>
       <canvas id="graficaProgreso" width="400" height="200"></canvas>
     </section>
 
     <section id="blog">
       <h2>📝 Mi Diario</h2>
-      <p>Próximamente: entradas de blog personales, recetas, consejos y más.</p>
+      <p>Próximamente: recetas, experiencias y más.</p>
     </section>
   </main>
 
