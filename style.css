@@ -37,45 +37,37 @@ section.visible {
   font-weight: bold;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-#ejercicios-lista button {
-  display: block;
-  margin: 0.5rem 0;
-  padding: 0.4rem 1rem;
-  background-color: #ddd;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#ejercicios-lista button:hover {
-  background-color: #bbb;
-}
-
-.ejercicio {
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 1rem;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
   background-color: #fff;
-  border-radius: 5px;
 }
 
-.realizado {
-  background-color: #d4edda;
+th, td {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  text-align: center;
 }
 
-button.cancelar {
-  background-color: #f44336;
-  color: white;
-  margin-top: 0.5rem;
+input[type="number"] {
+  width: 60px;
 }
 
 button.hecho {
   background-color: #4CAF50;
   color: white;
-  margin-top: 0.5rem;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button.cancelar {
+  background-color: #f44336;
+  color: white;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
