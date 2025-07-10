@@ -56,20 +56,30 @@
         <div id="preview-foto"></div>
 
         <h3>📏 MEDIDAS CORPORALES</h3>
-        <label>Altura (cm): <input type="number" id="altura" /></label><br/>
-        <label>Peso (kg): <input type="number" id="peso" /></label><br/>
-        <label>% Grasa corporal: <input type="number" id="grasa" /></label><br/>
-        <label>Brazo (cm): <input type="number" id="brazo" /></label><br/>
-        <label>Pierna (cm): <input type="number" id="pierna" /></label><br/>
-        <label>Pecho (cm): <input type="number" id="pecho" /></label><br/>
+        <div class="medidas-grid">
+          <label>Altura (cm): <input type="number" id="altura" /></label>
+          <label>Peso (kg): <input type="number" id="peso" /></label>
+          <label>% Grasa: <input type="number" id="grasa" /></label>
+          <label>Brazo Izq (cm): <input type="number" id="brazo-izq" /></label>
+          <label>Brazo Dcho (cm): <input type="number" id="brazo-dcho" /></label>
+          <label>Pierna Izq (cm): <input type="number" id="pierna-izq" /></label>
+          <label>Pierna Dcha (cm): <input type="number" id="pierna-dcho" /></label>
+          <label>Pecho (cm): <input type="number" id="pecho" /></label>
+        </div>
 
         <h3>⏱️ CONFIGURACIÓN DE DESCANSO</h3>
         <label>Segundos entre series: <input type="number" id="tiempo-descanso" value="30" /></label><br/>
       </div>
 
       <h3>📅 CALENDARIO</h3>
+      <div id="mes-calendario"></div>
       <div id="calendario-interactivo" class="grid-calendario"></div>
       <div id="graficas-por-dia"></div>
+
+      <h3>📊 ESTADÍSTICAS GAMIFICADAS</h3>
+      <p>NIVEL: <span id="nivel-usuario">1</span></p>
+      <p>PUNTOS: <span id="puntos-usuario">0</span></p>
+      <p>RACHA: <span id="racha-usuario">0</span> días seguidos</p>
 
       <h3>📝 HISTORIAL DE SESIONES</h3>
       <div id="info-extra-usuario"></div>
@@ -97,7 +107,6 @@
         <button onclick="cerrarPopup()">GUARDAR</button>
       </div>
     </div>
-
   </main>
 
   <script src="script.js"></script>
