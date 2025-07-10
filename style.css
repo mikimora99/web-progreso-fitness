@@ -77,6 +77,16 @@ button.cancelar {
   cursor: pointer;
 }
 
+button.anadir-serie {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
 .realizado {
   background-color: #d4edda !important;
 }
