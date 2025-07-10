@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mi Progreso Fitness</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
@@ -35,14 +36,12 @@
         <option value="core">Core</option>
       </select>
 
-      <div id="ejercicios-lista"></div>
-
-      <ul id="lista-ejercicios"></ul>
+      <div id="tabla-ejercicios"></div>
     </section>
 
     <section id="calendario">
       <h2>📆 Progreso en el Calendario</h2>
-      <ul id="historial-sesiones"></ul>
+      <canvas id="graficaProgreso" width="400" height="200"></canvas>
     </section>
 
     <section id="blog">
