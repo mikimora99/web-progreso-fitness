@@ -12,7 +12,7 @@
     <h1>🏋️ MI PROGRESO FITNESS</h1>
     <nav>
       <button onclick="mostrarSeccion('rutinas')">RUTINAS</button>
-      <button onclick="mostrarSeccion('calendario')">CALENDARIO</button>
+      <button onclick="mostrarSeccion('planes')">PLANES</button>
       <button onclick="mostrarSeccion('usuario')">USUARIO</button>
       <button onclick="mostrarSeccion('blog')">BLOG</button>
     </nav>
@@ -43,10 +43,9 @@
       <div id="contenedor-tablas"></div>
     </section>
 
-    <section id="calendario">
-      <h2>📆 CALENDARIO DE ENTRENAMIENTOS</h2>
-      <div id="calendario-interactivo" class="grid-calendario"></div>
-      <div id="graficas-por-dia"></div>
+    <section id="planes">
+      <h2>📆 PLANES DE ENTRENAMIENTO</h2>
+      <p>Muy pronto podrás elegir entre distintos planes personalizados.</p>
     </section>
 
     <section id="usuario">
@@ -56,13 +55,18 @@
         <label>Foto de perfil: <input type="file" id="foto-usuario" accept="image/*" /></label>
         <div id="preview-foto"></div>
       </div>
+
+      <h3>📅 CALENDARIO</h3>
+      <div id="calendario-interactivo" class="grid-calendario"></div>
+      <div id="graficas-por-dia"></div>
+
       <h3>📝 HISTORIAL DE SESIONES</h3>
       <div id="info-extra-usuario"></div>
     </section>
 
     <section id="blog">
       <h2>📝 MI DIARIO</h2>
-      <p>Próximamente: recetas, experiencias y más.</p>
+      <p>Próximamente: cualquier usuario podrá escribir aquí sus reflexiones y rutinas.</p>
     </section>
   </main>
 
