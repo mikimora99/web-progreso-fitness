@@ -41,27 +41,24 @@ function cargarEjercicios() {
   const grupo = document.getElementById("grupo-muscular").value;
   const contenedor = document.getElementById("tabla-ejercicios");
   contenedor.innerHTML = "";
-
   if (!grupo) return;
 
   const tabla = document.createElement("table");
   tabla.innerHTML = `
     <tr>
       <th>Ejercicio</th>
-      <th>Anterior (kg x reps)</th>
-      <th>Actual (kg x reps)</th>
-      <th>Hecho</th>
-      <th>Eliminar</th>
-    </tr>
-  `;
+      <th>Anterior</th>
+      <th>Actual</th>
+      <th>✅</th>
+      <th>🗑</th>
+    </tr>`;
 
   bibliotecaEjercicios[grupo].forEach(ej => {
     const anterior = sesionesAnteriores[ej] || { kg: "-", reps: "-" };
     const fila = document.createElement("tr");
-
     fila.innerHTML = `
       <td>${ej}</td>
-      <td>${anterior.kg} kg x ${anterior.reps}</td>
+      <td>${anterior.kg}kg x ${anterior.reps}</td>
       <td>
         <input type="number" placeholder="kg" onchange="guardarDato('${ej}', 'kg', this.value)" />
         x
@@ -70,7 +67,6 @@ function cargarEjercicios() {
       <td><button class="hecho" onclick="marcarHecho(this)">✅</button></td>
       <td><button class="cancelar" onclick="eliminarFila(this)">🗑</button></td>
     `;
-
     tabla.appendChild(fila);
   });
 
@@ -87,29 +83,28 @@ function guardarDato(nombre, campo, valor) {
 }
 
 function marcarHecho(boton) {
-  boton.closest("tr").style.backgroundColor = "#d4edda";
+  boton.closest("tr").classList.add("realizado");
 }
 
 function eliminarFila(boton) {
   const fila = boton.closest("tr");
-  const nombre = fila.querySelector("td").innerText;
-  fila.remove();
+  const nombre = fila.querySelector("td").textContent;
   ejercicios = ejercicios.filter(e => e.nombre !== nombre);
+  fila.remove();
 }
 
 function cancelarEntrenamiento() {
-  if (confirm("¿Seguro que quieres cancelar el entrenamiento?")) {
-    ejercicios = [];
-    clearInterval(intervalo);
-    segundos = 0;
-    temporizadorActivo = false;
-    document.getElementById("temporizador").textContent = "00:00:00";
-    document.getElementById("tabla-ejercicios").innerHTML = "";
-  }
+  if (!confirm("¿Cancelar entrenamiento actual?")) return;
+  ejercicios = [];
+  clearInterval(intervalo);
+  segundos = 0;
+  temporizadorActivo = false;
+  document.getElementById("temporizador").textContent = "00:00:00";
+  document.getElementById("tabla-ejercicios").innerHTML = "";
 }
 
 function finalizarSesion() {
-  if (ejercicios.length === 0) return alert("No hay ejercicios cargados.");
+  if (ejercicios.length === 0) return alert("No hay ejercicios para guardar.");
   ejercicios.forEach(e => {
     sesionesAnteriores[e.nombre] = { kg: e.kg || "-", reps: e.reps || "-" };
   });
@@ -122,37 +117,40 @@ function finalizarSesion() {
   });
   localStorage.setItem("historial", JSON.stringify(historial));
 
-  alert("Sesión guardada correctamente.");
+  alert("✅ Sesión guardada.");
   cancelarEntrenamiento();
 }
 
 function mostrarGrafica() {
-  const canvas = document.getElementById("graficaProgreso");
-  const datos = {};
+  const ctx = document.getElementById("graficaProgreso").getContext("2d");
+  const datosPorEjercicio = {};
 
   historial.forEach(sesion => {
     sesion.ejercicios.forEach(e => {
-      if (!datos[e.nombre]) datos[e.nombre] = [];
-      datos[e.nombre].push(Number(e.kg || 0));
+      if (!datosPorEjercicio[e.nombre]) datosPorEjercicio[e.nombre] = [];
+      datosPorEjercicio[e.nombre].push(Number(e.kg || 0));
     });
   });
 
   const etiquetas = historial.map(s => s.fecha);
-  const datasets = Object.entries(datos).map(([nombre, pesos]) => ({
+  const datasets = Object.entries(datosPorEjercicio).map(([nombre, datos]) => ({
     label: nombre,
-    data: pesos,
+    data: datos,
     borderWidth: 2,
     fill: false
   }));
 
-  new Chart(canvas, {
+  new Chart(ctx, {
     type: "line",
-    data: { labels: etiquetas, datasets },
+    data: {
+      labels: etiquetas,
+      datasets
+    },
     options: {
       responsive: true,
       plugins: {
         legend: { position: 'top' },
-        title: { display: true, text: 'Progreso de carga (kg)' }
+        title: { display: true, text: 'Progreso (kg por sesión)' }
       }
     }
   });
