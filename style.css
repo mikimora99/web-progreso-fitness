@@ -134,3 +134,18 @@ button.anadir-serie {
   margin-top: 1rem;
   border-radius: 50%;
 }
+
+select, option {
+  background-color: #1a2b3a;
+  color: #deff77;
+  border-radius: 25px;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border: 1px solid #deff77;
+  text-transform: uppercase;
+}
+
+select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
