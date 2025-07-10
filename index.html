@@ -22,12 +22,18 @@
       <button onclick="iniciarTemporizador()">⏱ Iniciar sesión</button>
       <div id="temporizador">00:00:00</div>
 
-      <form id="formulario-ejercicio">
-        <input type="text" placeholder="Nombre del ejercicio" required />
-        <input type="number" placeholder="Peso (kg)" required />
-        <input type="number" placeholder="Repeticiones" required />
-        <button type="submit">Añadir ejercicio</button>
-      </form>
+      <h3>🏷️ Elige un grupo muscular</h3>
+      <select id="grupo-muscular" onchange="cargarEjercicios()">
+        <option value="">-- Selecciona uno --</option>
+        <option value="pecho">Pecho</option>
+        <option value="espalda">Espalda</option>
+        <option value="piernas">Piernas</option>
+        <option value="brazos">Brazos</option>
+        <option value="hombros">Hombros</option>
+        <option value="core">Core</option>
+      </select>
+
+      <div id="ejercicios-lista"></div>
 
       <ul id="lista-ejercicios"></ul>
     </section>
