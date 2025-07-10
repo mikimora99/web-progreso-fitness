@@ -1,8 +1,18 @@
 let segundos = 0;
 let temporizadorActivo = false;
 let intervalo;
-let ejerciciosActuales = [];
+let ejercicios = [];
 let historial = JSON.parse(localStorage.getItem("historial")) || [];
+let sesionesAnteriores = JSON.parse(localStorage.getItem("ultimasSesiones")) || {};
+
+const bibliotecaEjercicios = {
+  pecho: ["Press banca", "Press inclinado", "Aperturas con mancuernas"],
+  espalda: ["Dominadas", "Remo con barra", "Peso muerto"],
+  piernas: ["Sentadillas", "Prensa", "Zancadas"],
+  brazos: ["Curl bíceps", "Fondos", "Extensión tríceps polea"],
+  hombros: ["Press militar", "Elevaciones laterales", "Pájaros"],
+  core: ["Planchas", "Crunch abdominal", "Elevaciones de piernas"]
+};
 
 function iniciarTemporizador() {
   if (!temporizadorActivo) {
@@ -14,143 +24,136 @@ function iniciarTemporizador() {
   }
 }
 
-function formatearTiempo(segundos) {
-  const h = Math.floor(segundos / 3600).toString().padStart(2, '0');
-  const m = Math.floor((segundos % 3600) / 60).toString().padStart(2, '0');
-  const s = (segundos % 60).toString().padStart(2, '0');
+function formatearTiempo(seg) {
+  const h = String(Math.floor(seg / 3600)).padStart(2, '0');
+  const m = String(Math.floor((seg % 3600) / 60)).padStart(2, '0');
+  const s = String(seg % 60).padStart(2, '0');
   return `${h}:${m}:${s}`;
 }
 
 function mostrarSeccion(id) {
   document.querySelectorAll("section").forEach(s => s.classList.remove("visible"));
   document.getElementById(id).classList.add("visible");
-  if (id === "calendario") cargarHistorial();
+  if (id === "calendario") mostrarGrafica();
 }
-
-const bibliotecaEjercicios = {
-  pecho: ["Press banca", "Press inclinado", "Aperturas con mancuernas"],
-  espalda: ["Dominadas", "Remo con barra", "Peso muerto"],
-  piernas: ["Sentadillas", "Prensa", "Zancadas"],
-  brazos: ["Curl bíceps", "Fondos", "Extensión tríceps polea"],
-  hombros: ["Press militar", "Elevaciones laterales", "Pájaros"],
-  core: ["Planchas", "Crunch abdominal", "Elevaciones de piernas"]
-};
-
-const sesionesAnteriores = JSON.parse(localStorage.getItem("ultimasSesiones")) || {};
 
 function cargarEjercicios() {
   const grupo = document.getElementById("grupo-muscular").value;
-  const lista = document.getElementById("ejercicios-lista");
-  lista.innerHTML = "";
+  const contenedor = document.getElementById("tabla-ejercicios");
+  contenedor.innerHTML = "";
 
-  if (grupo && bibliotecaEjercicios[grupo]) {
-    bibliotecaEjercicios[grupo].forEach(ejercicio => {
-      const btn = document.createElement("button");
-      btn.textContent = `➕ ${ejercicio}`;
-      btn.onclick = () => agregarEjercicioDesdeBiblioteca(ejercicio);
-      lista.appendChild(btn);
-    });
-  }
-}
+  if (!grupo) return;
 
-function agregarEjercicioDesdeBiblioteca(nombre) {
-  const anterior = sesionesAnteriores[nombre] || { kg: "-", reps: "-" };
+  const tabla = document.createElement("table");
+  tabla.innerHTML = `
+    <tr>
+      <th>Ejercicio</th>
+      <th>Anterior (kg x reps)</th>
+      <th>Actual (kg x reps)</th>
+      <th>Hecho</th>
+      <th>Eliminar</th>
+    </tr>
+  `;
 
-  const ejercicio = {
-    nombre,
-    kgAnterior: anterior.kg,
-    repsAnterior: anterior.reps,
-    kgActual: "",
-    repsActual: "",
-    hecho: false
-  };
-  ejerciciosActuales.push(ejercicio);
-  renderizarEjercicios();
-}
+  bibliotecaEjercicios[grupo].forEach(ej => {
+    const anterior = sesionesAnteriores[ej] || { kg: "-", reps: "-" };
+    const fila = document.createElement("tr");
 
-function renderizarEjercicios() {
-  const lista = document.getElementById("lista-ejercicios");
-  lista.innerHTML = "";
-  ejerciciosActuales.forEach((ej, i) => {
-    const li = document.createElement("li");
-    li.className = "ejercicio" + (ej.hecho ? " realizado" : "");
-
-    li.innerHTML = `
-      <strong>${ej.nombre}</strong><br>
-      Anterior: ${ej.kgAnterior} kg x ${ej.repsAnterior} reps<br>
-      Actual: 
-      <input type="number" placeholder="Kg" value="${ej.kgActual}" onchange="actualizarCampo(${i}, 'kgActual', this.value)" />
-      x
-      <input type="number" placeholder="Reps" value="${ej.repsActual}" onchange="actualizarCampo(${i}, 'repsActual', this.value)" />
-      <br>
-      <button class="hecho" onclick="marcarHecho(${i})">✅ Hecho</button>
-      <button class="cancelar" onclick="eliminarEjercicio(${i})">🗑 Cancelar</button>
+    fila.innerHTML = `
+      <td>${ej}</td>
+      <td>${anterior.kg} kg x ${anterior.reps}</td>
+      <td>
+        <input type="number" placeholder="kg" onchange="guardarDato('${ej}', 'kg', this.value)" />
+        x
+        <input type="number" placeholder="reps" onchange="guardarDato('${ej}', 'reps', this.value)" />
+      </td>
+      <td><button class="hecho" onclick="marcarHecho(this)">✅</button></td>
+      <td><button class="cancelar" onclick="eliminarFila(this)">🗑</button></td>
     `;
-    lista.appendChild(li);
+
+    tabla.appendChild(fila);
   });
+
+  contenedor.appendChild(tabla);
 }
 
-function actualizarCampo(index, campo, valor) {
-  ejerciciosActuales[index][campo] = valor;
+function guardarDato(nombre, campo, valor) {
+  let ej = ejercicios.find(e => e.nombre === nombre);
+  if (!ej) {
+    ej = { nombre, kg: "", reps: "" };
+    ejercicios.push(ej);
+  }
+  ej[campo] = valor;
 }
 
-function marcarHecho(index) {
-  ejerciciosActuales[index].hecho = true;
-  renderizarEjercicios();
+function marcarHecho(boton) {
+  boton.closest("tr").style.backgroundColor = "#d4edda";
 }
 
-function eliminarEjercicio(index) {
-  ejerciciosActuales.splice(index, 1);
-  renderizarEjercicios();
+function eliminarFila(boton) {
+  const fila = boton.closest("tr");
+  const nombre = fila.querySelector("td").innerText;
+  fila.remove();
+  ejercicios = ejercicios.filter(e => e.nombre !== nombre);
 }
 
 function cancelarEntrenamiento() {
-  if (confirm("¿Seguro que quieres cancelar el entrenamiento actual?")) {
-    ejerciciosActuales = [];
-    segundos = 0;
+  if (confirm("¿Seguro que quieres cancelar el entrenamiento?")) {
+    ejercicios = [];
     clearInterval(intervalo);
+    segundos = 0;
     temporizadorActivo = false;
     document.getElementById("temporizador").textContent = "00:00:00";
-    renderizarEjercicios();
+    document.getElementById("tabla-ejercicios").innerHTML = "";
   }
 }
 
 function finalizarSesion() {
-  if (ejerciciosActuales.length === 0) {
-    alert("No hay ejercicios en la sesión.");
-    return;
-  }
-
-  ejerciciosActuales.forEach(ej => {
-    sesionesAnteriores[ej.nombre] = {
-      kg: ej.kgActual || "-",
-      reps: ej.repsActual || "-"
-    };
+  if (ejercicios.length === 0) return alert("No hay ejercicios cargados.");
+  ejercicios.forEach(e => {
+    sesionesAnteriores[e.nombre] = { kg: e.kg || "-", reps: e.reps || "-" };
   });
-
   localStorage.setItem("ultimasSesiones", JSON.stringify(sesionesAnteriores));
 
-  const fecha = new Date().toLocaleString();
   historial.push({
-    fecha,
-    ejercicios: [...ejerciciosActuales],
-    duracion: formatearTiempo(segundos)
+    fecha: new Date().toLocaleDateString(),
+    ejercicios: [...ejercicios],
+    tiempo: formatearTiempo(segundos)
   });
-
   localStorage.setItem("historial", JSON.stringify(historial));
 
-  alert("¡Sesión guardada con éxito!");
-  cancelarEntrenamiento(); // limpia
+  alert("Sesión guardada correctamente.");
+  cancelarEntrenamiento();
 }
 
-function cargarHistorial() {
-  const lista = document.getElementById("historial-sesiones");
-  lista.innerHTML = "";
-  historial.slice().reverse().forEach(sesion => {
-    const item = document.createElement("li");
-    item.innerHTML = `<strong>${sesion.fecha}</strong> - duración: ${sesion.duracion}<ul>` +
-      sesion.ejercicios.map(e => `<li>${e.nombre}: ${e.kgActual} kg x ${e.repsActual} reps</li>`).join("") +
-      `</ul>`;
-    lista.appendChild(item);
+function mostrarGrafica() {
+  const canvas = document.getElementById("graficaProgreso");
+  const datos = {};
+
+  historial.forEach(sesion => {
+    sesion.ejercicios.forEach(e => {
+      if (!datos[e.nombre]) datos[e.nombre] = [];
+      datos[e.nombre].push(Number(e.kg || 0));
+    });
+  });
+
+  const etiquetas = historial.map(s => s.fecha);
+  const datasets = Object.entries(datos).map(([nombre, pesos]) => ({
+    label: nombre,
+    data: pesos,
+    borderWidth: 2,
+    fill: false
+  }));
+
+  new Chart(canvas, {
+    type: "line",
+    data: { labels: etiquetas, datasets },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: 'Progreso de carga (kg)' }
+      }
+    }
   });
 }
