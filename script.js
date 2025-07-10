@@ -40,16 +40,25 @@ function mostrarSeccion(id) {
 function cargarEjerciciosGrupo() {
   const grupo = document.getElementById("grupo-muscular").value;
   const selector = document.getElementById("selector-ejercicio");
-  selector.innerHTML = "";
   const contenedor = document.getElementById("contenedor-tablas");
+
+  selector.innerHTML = "";
   contenedor.innerHTML = "";
-  if (!grupo) return;
+
+  if (!grupo || !bibliotecaEjercicios[grupo]) return;
 
   const select = document.createElement("select");
-  select.innerHTML = `<option value="">-- Elegir ejercicio --</option>` +
-    bibliotecaEjercicios[grupo].map(ej => `<option value="${ej}">${ej}</option>`).join("");
+  select.id = "ejercicio-selector";
 
-  select.onchange = () => agregarTablaEjercicio(select.value);
+  const opciones = bibliotecaEjercicios[grupo].map(ej => {
+    return `<option value="${ej}">${ej}</option>`;
+  }).join("");
+
+  select.innerHTML = `<option value="">-- Elige un ejercicio --</option>${opciones}`;
+  select.onchange = () => {
+    if (select.value !== "") agregarTablaEjercicio(select.value);
+  };
+
   selector.appendChild(select);
 }
 
