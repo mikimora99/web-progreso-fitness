@@ -9,34 +9,34 @@
 </head>
 <body>
   <header>
-    <h1>🏋️ Mi Progreso Fitness</h1>
+    <h1>🏋️ MI PROGRESO FITNESS</h1>
     <nav>
-      <button onclick="mostrarSeccion('rutinas')">Rutinas</button>
-      <button onclick="mostrarSeccion('calendario')">Calendario</button>
-      <button onclick="mostrarSeccion('usuario')">Usuario</button>
-      <button onclick="mostrarSeccion('blog')">Blog</button>
+      <button onclick="mostrarSeccion('rutinas')">RUTINAS</button>
+      <button onclick="mostrarSeccion('calendario')">CALENDARIO</button>
+      <button onclick="mostrarSeccion('usuario')">USUARIO</button>
+      <button onclick="mostrarSeccion('blog')">BLOG</button>
     </nav>
   </header>
 
   <main>
     <section id="rutinas" class="visible">
-      <h2>📋 Rutina de Hoy</h2>
+      <h2>📋 RUTINA DE HOY</h2>
       <div id="temporizador">00:00:00</div>
       <div class="acciones">
-        <button onclick="iniciarTemporizador()">⏱ Iniciar sesión</button>
-        <button onclick="finalizarSesion()">✅ Finalizar sesión</button>
-        <button onclick="cancelarEntrenamiento()">🚫 Cancelar entrenamiento</button>
+        <button onclick="iniciarTemporizador()">⏱ INICIAR SESIÓN</button>
+        <button onclick="finalizarSesion()">✅ FINALIZAR SESIÓN</button>
+        <button onclick="cancelarEntrenamiento()">🚫 CANCELAR ENTRENAMIENTO</button>
       </div>
 
-      <h3>🏷️ Grupo muscular</h3>
-      <select id="grupo-muscular" onchange="cargarEjerciciosGrupo()">
-        <option value="">-- Selecciona uno --</option>
-        <option value="pecho">Pecho</option>
-        <option value="espalda">Espalda</option>
-        <option value="piernas">Piernas</option>
-        <option value="brazos">Brazos</option>
-        <option value="hombros">Hombros</option>
-        <option value="core">Core</option>
+      <h3>🏷️ GRUPO MUSCULAR</h3>
+      <select id="grupo-muscular" onchange="cargarEjerciciosGrupo()" disabled>
+        <option value="">-- SELECCIONA UNO --</option>
+        <option value="pecho">PECHO</option>
+        <option value="espalda">ESPALDA</option>
+        <option value="piernas">PIERNAS</option>
+        <option value="brazos">BRAZOS</option>
+        <option value="hombros">HOMBROS</option>
+        <option value="core">CORE</option>
       </select>
 
       <div id="selector-ejercicio"></div>
@@ -44,18 +44,24 @@
     </section>
 
     <section id="calendario">
-      <h2>📆 Calendario de Entrenamientos</h2>
-      <div id="calendario-interactivo"></div>
+      <h2>📆 CALENDARIO DE ENTRENAMIENTOS</h2>
+      <div id="calendario-interactivo" class="grid-calendario"></div>
       <div id="graficas-por-dia"></div>
     </section>
 
     <section id="usuario">
-      <h2>👤 Usuario</h2>
-      <p>Aquí podrás ver tus datos personales, objetivos y configuraciones futuras.</p>
+      <h2>👤 PERFIL DE USUARIO</h2>
+      <div id="perfil">
+        <label>Nombre: <input type="text" id="nombre-usuario" placeholder="TU NOMBRE" /></label><br />
+        <label>Foto de perfil: <input type="file" id="foto-usuario" accept="image/*" /></label>
+        <div id="preview-foto"></div>
+      </div>
+      <h3>📝 HISTORIAL DE SESIONES</h3>
+      <div id="info-extra-usuario"></div>
     </section>
 
     <section id="blog">
-      <h2>📝 Mi Diario</h2>
+      <h2>📝 MI DIARIO</h2>
       <p>Próximamente: recetas, experiencias y más.</p>
     </section>
   </main>
