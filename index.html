@@ -3,31 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mi Entrenamiento</title>
+  <title>App de Entrenamiento</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1>MI ENTRENAMIENTO</h1>
+    <h1>APP DE ENTRENAMIENTO</h1>
     <nav>
-      <button onclick="mostrarSeccion('inicio')">Inicio</button>
-      <button onclick="mostrarSeccion('usuario')">Usuario</button>
-      <button onclick="mostrarSeccion('blog')">Blog</button>
+      <button onclick="mostrarSeccion('entrenamiento')">ENTRENAR</button>
+      <button onclick="mostrarSeccion('usuario')">USUARIO</button>
+      <button onclick="mostrarSeccion('planes')">PLANES</button>
+      <button onclick="mostrarSeccion('blog')">BLOG</button>
     </nav>
   </header>
 
   <main>
-    <!-- INICIO -->
-    <section id="inicio" class="visible">
-      <h2>Entrenamiento Diario</h2>
-      <button onclick="iniciarTemporizador()">Iniciar Entrenamiento</button>
-      <button onclick="finalizarSesion()">Finalizar Entrenamiento</button>
-      <button onclick="cancelarEntrenamiento()">Cancelar Entrenamiento</button>
+    <!-- ENTRENAMIENTO -->
+    <section id="entrenamiento" class="visible">
+      <h2>ENTRENAMIENTO</h2>
+      <button onclick="iniciarTemporizador()">INICIAR SESIÓN</button>
       <div id="temporizador">00:00:00</div>
-
-      <h3>Grupo Muscular</h3>
       <select id="grupo-muscular" onchange="cargarEjerciciosGrupo()" disabled>
-        <option value="">-- Elegir Grupo --</option>
+        <option value="">-- Selecciona un grupo muscular --</option>
         <option value="pecho">Pecho</option>
         <option value="espalda">Espalda</option>
         <option value="piernas">Piernas</option>
@@ -35,83 +32,95 @@
         <option value="hombros">Hombros</option>
         <option value="core">Core</option>
       </select>
-
       <div id="selector-ejercicio"></div>
       <div id="contenedor-tablas"></div>
+      <button onclick="finalizarSesion()">FINALIZAR ENTRENAMIENTO</button>
+      <button onclick="cancelarEntrenamiento()">CANCELAR ENTRENAMIENTO</button>
     </section>
 
     <!-- USUARIO -->
     <section id="usuario">
-      <h2>Perfil de Usuario</h2>
-      <input type="file" id="foto-usuario" accept="image/*" />
-      <div id="preview-foto"></div>
-      <input type="text" id="nombre-usuario" placeholder="Tu nombre" />
+      <h2>PERFIL DE USUARIO</h2>
 
-      <h3 onclick="toggleDesplegable('configuracion')">▼ CONFIGURACIÓN</h3>
-      <div id="configuracion" class="desplegable">
-        <label for="tiempo-descanso">Tiempo de Descanso (seg):</label>
-        <input type="range" id="tiempo-descanso" min="10" max="180" value="30" />
+      <!-- Imagen de perfil -->
+      <div id="preview-foto" onclick="document.getElementById('foto-perfil').click()">
+        <img src="https://via.placeholder.com/80?text=+" alt="Foto Perfil" />
+      </div>
+      <input type="file" id="foto-perfil" style="display:none;" onchange="mostrarImagenPerfil(event)" />
+
+      <!-- Nombre -->
+      <input type="text" id="nombre-usuario" placeholder="Nombre" />
+
+      <!-- Desplegables -->
+      <h3 onclick="toggleDesplegable('bloque-medidas')">MEDIDAS CORPORALES</h3>
+      <div class="desplegable" id="bloque-medidas">
+        <div class="medidas-grid">
+          <input type="number" placeholder="Altura (cm)" />
+          <input type="number" placeholder="Peso (kg)" />
+          <input type="number" placeholder="Bíceps Izq (cm)" />
+          <input type="number" placeholder="Bíceps Der (cm)" />
+          <input type="number" placeholder="Pierna Izq (cm)" />
+          <input type="number" placeholder="Pierna Der (cm)" />
+          <input type="number" placeholder="Cintura (cm)" />
+          <input type="number" placeholder="% Grasa" />
+        </div>
       </div>
 
-      <h3 onclick="toggleDesplegable('medidas')">▼ MEDIDAS CORPORALES</h3>
-      <div id="medidas" class="desplegable medidas-grid">
-        <input type="number" placeholder="Altura (cm)" />
-        <input type="number" placeholder="Peso (kg)" />
-        <input type="number" placeholder="Brazo Izq (cm)" />
-        <input type="number" placeholder="Brazo Der (cm)" />
-        <input type="number" placeholder="Pierna Izq (cm)" />
-        <input type="number" placeholder="Pierna Der (cm)" />
-        <input type="number" placeholder="Cintura (cm)" />
-        <input type="number" placeholder="% Grasa Corporal" />
+      <h3 onclick="toggleDesplegable('bloque-config')">CONFIGURACIÓN</h3>
+      <div class="desplegable" id="bloque-config">
+        <label>Tiempo de descanso entre series (seg):</label>
+        <input type="range" min="10" max="120" value="30" id="tiempo-descanso" />
       </div>
 
-      <h3 onclick="toggleDesplegable('calendario')">▼ CALENDARIO</h3>
-      <div id="calendario" class="desplegable">
-        <div id="mes-calendario"></div>
-        <div id="calendario-interactivo" class="grid-calendario"></div>
-        <div id="graficas-por-dia"></div>
-      </div>
-
-      <h3 onclick="toggleDesplegable('stats')">▼ ESTADÍSTICAS</h3>
-      <div id="stats" class="desplegable">
-        <p>Puntos: <span id="puntos-usuario">0</span></p>
-        <p>Racha: <span id="racha-usuario">0</span></p>
-        <p>Nivel: <span id="nivel-usuario">1</span></p>
+      <h3 onclick="toggleDesplegable('bloque-estadisticas')">ESTADÍSTICAS</h3>
+      <div class="desplegable" id="bloque-estadisticas">
+        <p>PUNTOS: <span id="puntos-usuario">0</span></p>
+        <p>RACHA: <span id="racha-usuario">0</span></p>
+        <p>NIVEL: <span id="nivel-usuario">1</span></p>
         <div id="barra-progreso-nivel"></div>
         <div id="logros-visual"></div>
       </div>
+
+      <h3 onclick="toggleDesplegable('bloque-calendario')">CALENDARIO</h3>
+      <div class="desplegable" id="bloque-calendario">
+        <div id="mes-calendario"></div>
+        <div id="calendario-interactivo"></div>
+        <div id="graficas-por-dia"></div>
+      </div>
+    </section>
+
+    <!-- PLANES DE ENTRENAMIENTO -->
+    <section id="planes">
+      <h2>PLANES DE ENTRENAMIENTO</h2>
+      <p>Aquí desarrollaremos los planes de entrenamiento personalizados y estructurados para cada tipo de usuario.</p>
     </section>
 
     <!-- BLOG -->
     <section id="blog">
-      <h2>Blog de Usuarios</h2>
-      <p>Cualquier usuario puede compartir su experiencia o consejos. ¡Anímate a escribir!</p>
-      <button onclick="alert('Próximamente podrás subir tu propio blog')">Escribe tu blog</button>
-      <div id="blogs-publicados">
-        <!-- Entradas futuras -->
-      </div>
+      <h2>BLOG DE LA COMUNIDAD</h2>
+      <p>Cualquier usuario podrá escribir y compartir artículos, consejos y experiencias.</p>
     </section>
   </main>
 
-  <!-- POPUP FINALIZAR -->
-  <div id="popup-finalizar" class="popup">
+  <!-- POPUP Finalizar sesión -->
+  <div class="popup" id="popup-finalizar">
     <div class="popup-content">
-      <h3>Finalizar Entrenamiento</h3>
-      <p>¿Cómo fue tu entrenamiento?</p>
-      <label>Intensidad (0-10): <input type="number" min="0" max="10" /></label>
-      <label>Turno:
-        <select>
-          <option>Mañana</option>
-          <option>Tarde</option>
-          <option>Noche</option>
-        </select>
-      </label>
-      <label>Comentario: <input type="text" /></label>
-      <button onclick="cerrarPopup()">Guardar</button>
+      <h3>FINALIZA TU SESIÓN</h3>
+      <label>Intensidad (0-10):</label>
+      <input type="number" min="0" max="10" />
+      <label>Momento del día:</label>
+      <select>
+        <option>Mañana</option>
+        <option>Tarde</option>
+        <option>Noche</option>
+      </select>
+      <label>Comentario:</label>
+      <input type="text" />
+      <br /><br />
+      <button onclick="cerrarPopup()">GUARDAR</button>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
