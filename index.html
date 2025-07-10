@@ -3,129 +3,146 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mi Entrenador</title>
+  <title>Athletica</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1>MI ENTRENADOR</h1>
+    <h1 id="titulo">ATHLETICA</h1>
     <nav>
-      <button onclick="mostrarSeccion('inicio')">Inicio</button>
-      <button onclick="mostrarSeccion('planes')">Planes</button>
-      <button onclick="mostrarSeccion('entrenamiento')">Entrenamiento</button>
-      <button onclick="mostrarSeccion('usuario')">Usuario</button>
-      <button onclick="mostrarSeccion('blog')">Blog</button>
+      <button onclick="mostrarSeccion('inicio')">INICIO</button>
+      <button onclick="mostrarSeccion('entrenamiento')">ENTRENAMIENTO</button>
+      <button onclick="mostrarSeccion('planes')">PLANES</button>
+      <button onclick="mostrarSeccion('usuario')">USUARIO</button>
+      <button onclick="mostrarSeccion('blog')">BLOG</button>
     </nav>
   </header>
 
-  <main>
-    <!-- INICIO -->
-    <section id="inicio" class="visible">
-      <h2>¡BIENVENIDO!</h2>
-      <p>Empieza tu sesión y lleva el control de tu entrenamiento.</p>
-      <button onclick="iniciarTemporizador()">INICIAR SESIÓN</button>
-    </section>
+  <section id="inicio" class="visible">
+    <h2>Bienvenido a Athletica</h2>
+    <p>Tu plataforma inteligente de entrenamiento, progreso y salud.</p>
+  </section>
 
-    <!-- PLANES -->
-    <section id="planes">
-      <h2>PLANES DE ENTRENAMIENTO</h2>
-      <p>Muy pronto podrás seleccionar rutinas adaptadas a tus objetivos.</p>
-    </section>
+  <section id="entrenamiento">
+    <h2>Sesión de Entrenamiento</h2>
+    <div id="temporizador">00:00:00</div>
+    <button onclick="iniciarTemporizador()">INICIAR</button>
+    <button onclick="finalizarSesion()">FINALIZAR</button>
+    <button onclick="cancelarEntrenamiento()">CANCELAR</button>
+    <br /><br />
+    <label>Tiempo descanso (seg): <input id="tiempo-descanso" type="number" value="60" /></label>
+    <br />
+    <select id="grupo-muscular" disabled onchange="cargarEjerciciosGrupo()">
+      <option value="">-- Elegir grupo muscular --</option>
+      <option value="pecho">Pecho</option>
+      <option value="espalda">Espalda</option>
+      <option value="piernas">Piernas</option>
+      <option value="brazos">Brazos</option>
+      <option value="hombros">Hombros</option>
+      <option value="core">Core</option>
+    </select>
 
-    <!-- ENTRENAMIENTO -->
-    <section id="entrenamiento">
-      <h2>ENTRENAMIENTO ACTUAL</h2>
-      <div class="temporizador-wrapper">
-        <p id="temporizador">00:00:00</p>
+    <div id="selector-ejercicio"></div>
+    <div id="contenedor-tablas"></div>
+  </section>
+
+  <section id="planes">
+    <h2>Planes de Entrenamiento</h2>
+    <div class="plan">
+      <h3>💪 Principiantes - Fullbody 3 días</h3>
+      <ul>
+        <li>Lunes: Pecho, espalda, core</li>
+        <li>Miércoles: Piernas, hombros</li>
+        <li>Viernes: Fullbody circuito</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <h3>🔥 Definición - 4 días</h3>
+      <ul>
+        <li>Lunes: Cardio HIIT + Piernas</li>
+        <li>Martes: Pecho y tríceps</li>
+        <li>Jueves: Espalda y bíceps</li>
+        <li>Viernes: Core + Hombros</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <h3>🏋️‍♂️ Volumen - 5 días</h3>
+      <ul>
+        <li>Lunes: Pecho</li>
+        <li>Martes: Espalda</li>
+        <li>Miércoles: Piernas</li>
+        <li>Jueves: Hombros</li>
+        <li>Viernes: Brazos</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="usuario">
+    <h2 onclick="mostrarSeccion('inicio')" id="nombre-usuario">NOMBRE_USUARIO</h2>
+
+    <div class="desplegable" onclick="toggleDesplegable('medidas')">
+      <h3>📏 Medidas Corporales</h3>
+      <div id="medidas" class="contenido-desplegable">
+        <input placeholder="Altura (cm)" />
+        <input placeholder="Peso (kg)" />
+        <input placeholder="Brazo Izq (cm)" />
+        <input placeholder="Brazo Dcho (cm)" />
+        <input placeholder="Pierna Izq (cm)" />
+        <input placeholder="Pierna Dcha (cm)" />
+        <input placeholder="% Grasa corporal" />
       </div>
-      <label for="grupo-muscular">Grupo Muscular:</label>
-      <select id="grupo-muscular" onchange="cargarEjerciciosGrupo()" disabled>
-        <option value="">-- Elegir --</option>
-        <option value="pecho">Pecho</option>
-        <option value="espalda">Espalda</option>
-        <option value="piernas">Piernas</option>
-        <option value="brazos">Brazos</option>
-        <option value="hombros">Hombros</option>
-        <option value="core">Core</option>
-      </select>
+    </div>
 
-      <div id="selector-ejercicio"></div>
-      <div id="contenedor-tablas"></div>
-
-      <div class="botones-final">
-        <button onclick="finalizarSesion()">FINALIZAR ENTRENAMIENTO</button>
-        <button onclick="cancelarEntrenamiento()">CANCELAR ENTRENAMIENTO</button>
+    <div class="desplegable" onclick="toggleDesplegable('datos-sesion')">
+      <h3>📅 Datos de la Sesión</h3>
+      <div id="datos-sesion" class="contenido-desplegable">
+        <input placeholder="Comentario" />
+        <input placeholder="Intensidad (0-10)" />
+        <select><option>Mañana</option><option>Tarde</option><option>Noche</option></select>
       </div>
-    </section>
+    </div>
 
-    <!-- USUARIO -->
-    <section id="usuario">
-      <h2>PERFIL</h2>
-      <div id="preview-foto" onclick="document.getElementById('foto-perfil').click()">
-        <img src="https://via.placeholder.com/100" alt="Foto perfil" />
-        <input type="file" id="foto-perfil" onchange="mostrarImagenPerfil(event)" hidden />
+    <div class="desplegable" onclick="toggleDesplegable('perfil')">
+      <h3>👤 Perfil</h3>
+      <div id="perfil" class="contenido-desplegable">
+        <div id="preview-foto"><img src="avatar.png" /></div>
+        <input type="file" onchange="mostrarImagenPerfil(event)" />
       </div>
-      <input type="text" placeholder="Tu nombre" />
+    </div>
 
-      <div class="box" onclick="toggleDesplegable('desplegable-medidas')">
-        <h3>MEDIDAS</h3>
-        <div id="desplegable-medidas" class="desplegable">
-          <input type="number" placeholder="Altura (cm)" />
-          <input type="number" placeholder="Peso (kg)" />
-          <input type="number" placeholder="Brazo izquierdo (cm)" />
-          <input type="number" placeholder="Brazo derecho (cm)" />
-          <input type="number" placeholder="Pierna izquierda (cm)" />
-          <input type="number" placeholder="Pierna derecha (cm)" />
-          <input type="number" placeholder="% Grasa corporal" />
-        </div>
+    <div class="desplegable" onclick="toggleDesplegable('estadisticas')">
+      <h3>📈 Progreso</h3>
+      <div id="estadisticas" class="contenido-desplegable">
+        <p>Puntos: <span id="puntos-usuario">0</span></p>
+        <p>Racha: <span id="racha-usuario">0</span></p>
+        <p>Nivel: <span id="nivel-usuario">1</span></p>
       </div>
+    </div>
 
-      <div class="box" onclick="toggleDesplegable('desplegable-descanso')">
-        <h3>CONFIGURAR DESCANSO</h3>
-        <div id="desplegable-descanso" class="desplegable">
-          <input type="number" id="tiempo-descanso" value="60" /> segundos entre series
-        </div>
-      </div>
+    <h3>🗓 Calendario</h3>
+    <div id="mes-calendario"></div>
+    <div id="calendario-interactivo"></div>
+    <div id="graficas-por-dia"></div>
+  </section>
 
-      <div class="box" onclick="toggleDesplegable('desplegable-logros')">
-        <h3>LOGROS Y RECOMPENSAS</h3>
-        <div id="desplegable-logros" class="desplegable">
-          <p>Puntos: <span id="puntos-usuario">0</span></p>
-          <p>Racha: <span id="racha-usuario">0</span></p>
-          <p>Nivel: <span id="nivel-usuario">1</span></p>
-          <div id="logros-visual"></div>
-        </div>
-      </div>
+  <section id="blog">
+    <h2>BLOG DE LA COMUNIDAD</h2>
+    <p>Cualquier usuario puede compartir artículos, reflexiones o consejos de entrenamiento.</p>
+    <textarea placeholder="Escribe tu blog aquí..."></textarea>
+    <button>PUBLICAR</button>
+  </section>
 
-      <div class="box" onclick="toggleDesplegable('desplegable-calendario')">
-        <h3>CALENDARIO</h3>
-        <div id="desplegable-calendario" class="desplegable">
-          <p id="mes-calendario"></p>
-          <div id="calendario-interactivo"></div>
-          <div id="graficas-por-dia"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BLOG -->
-    <section id="blog">
-      <h2>BLOG COMUNITARIO</h2>
-      <p>Cualquier usuario puede escribir un artículo o experiencia. ¡Comparte la tuya!</p>
-    </section>
-  </main>
-
-  <!-- POPUP FINALIZAR -->
-  <div id="popup-finalizar">
+  <div id="popup-finalizar" class="popup">
     <div class="popup-contenido">
       <p>¿Cómo fue tu entrenamiento?</p>
-      <input type="number" placeholder="Intensidad (0 a 10)" />
+      <input placeholder="Comentario" />
       <select>
         <option>Mañana</option>
         <option>Tarde</option>
         <option>Noche</option>
       </select>
-      <textarea placeholder="Comentario..."></textarea>
-      <button onclick="cerrarPopup()">Guardar</button>
+      <input type="number" placeholder="Intensidad del 0 al 10" />
+      <button onclick="cerrarPopup()">GUARDAR</button>
     </div>
   </div>
 
