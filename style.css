@@ -31,19 +31,33 @@ section.visible {
   display: block;
 }
 
-form input, form button {
-  display: block;
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-}
-
 #temporizador {
   font-size: 1.5rem;
   margin-top: 1rem;
   font-weight: bold;
 }
 
+form input, form button {
+  display: block;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+
 ul {
   list-style: none;
   padding: 0;
+}
+
+#ejercicios-lista button {
+  display: block;
+  margin: 0.5rem 0;
+  padding: 0.4rem 1rem;
+  background-color: #ddd;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#ejercicios-lista button:hover {
+  background-color: #bbb;
 }
