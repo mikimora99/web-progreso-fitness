@@ -1,8 +1,8 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  padding: 0;
-  background: #f6f6f6;
+  background: #f9f9f9;
+  color: #222;
 }
 
 header {
@@ -13,14 +13,14 @@ header {
 }
 
 nav button {
-  margin: 0.5rem;
+  margin: 0.3rem;
   padding: 0.5rem 1rem;
   font-weight: bold;
   cursor: pointer;
 }
 
 main {
-  padding: 2rem;
+  padding: 1rem 2rem;
 }
 
 section {
@@ -31,34 +31,39 @@ section.visible {
   display: block;
 }
 
+.acciones button {
+  margin: 0.5rem 0.5rem 1rem 0;
+}
+
 #temporizador {
-  font-size: 1.5rem;
-  margin: 1rem 0;
+  font-size: 1.4rem;
   font-weight: bold;
+  margin: 1rem 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
   background-color: #fff;
+  margin-top: 1rem;
 }
 
 th, td {
-  padding: 0.5rem;
+  padding: 0.6rem;
   border: 1px solid #ccc;
   text-align: center;
 }
 
 input[type="number"] {
   width: 60px;
+  padding: 4px;
 }
 
 button.hecho {
   background-color: #4CAF50;
   color: white;
-  padding: 4px 10px;
   border: none;
+  padding: 4px 8px;
   border-radius: 5px;
   cursor: pointer;
 }
@@ -66,8 +71,12 @@ button.hecho {
 button.cancelar {
   background-color: #f44336;
   color: white;
-  padding: 4px 10px;
   border: none;
+  padding: 4px 8px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.realizado {
+  background-color: #d4edda !important;
 }
