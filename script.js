@@ -44,17 +44,12 @@ function cargarEjerciciosGrupo() {
 
   selector.innerHTML = "";
   contenedor.innerHTML = "";
-
   if (!grupo || !bibliotecaEjercicios[grupo]) return;
 
   const select = document.createElement("select");
-  select.id = "ejercicio-selector";
+  select.innerHTML = `<option value="">-- Elige un ejercicio --</option>` +
+    bibliotecaEjercicios[grupo].map(ej => `<option value="${ej}">${ej}</option>`).join("");
 
-  const opciones = bibliotecaEjercicios[grupo].map(ej => {
-    return `<option value="${ej}">${ej}</option>`;
-  }).join("");
-
-  select.innerHTML = `<option value="">-- Elige un ejercicio --</option>${opciones}`;
   select.onchange = () => {
     if (select.value !== "") agregarTablaEjercicio(select.value);
   };
