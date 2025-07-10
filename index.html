@@ -20,6 +20,8 @@
     <section id="rutinas" class="visible">
       <h2>📋 Rutina de Hoy</h2>
       <button onclick="iniciarTemporizador()">⏱ Iniciar sesión</button>
+      <button onclick="finalizarSesion()">✅ Finalizar sesión</button>
+      <button onclick="cancelarEntrenamiento()">🚫 Cancelar entrenamiento</button>
       <div id="temporizador">00:00:00</div>
 
       <h3>🏷️ Elige un grupo muscular</h3>
@@ -40,7 +42,7 @@
 
     <section id="calendario">
       <h2>📆 Progreso en el Calendario</h2>
-      <p>Próximamente: integración de calendario y gráficas de evolución.</p>
+      <ul id="historial-sesiones"></ul>
     </section>
 
     <section id="blog">
