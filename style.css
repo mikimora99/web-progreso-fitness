@@ -1,215 +1,179 @@
 body {
   font-family: 'Arial', sans-serif;
   background-color: #0f1e29;
-  color: #ffffff;
+  color: white;
   margin: 0;
   padding: 0;
 }
 
 header {
   background-color: #0f1e29;
-  padding: 10px;
+  padding: 1rem;
   text-align: center;
 }
 
-#titulo-web {
-  font-size: 2em;
+h1#nombre-usuario {
   color: #deff77;
-  cursor: pointer;
-}
-
-nav {
-  margin-top: 10px;
-}
-
-nav button {
-  background-color: transparent;
-  color: #ffffff;
-  border: 2px solid transparent;
-  margin: 5px;
-  padding: 8px 14px;
-  border-radius: 12px;
+  font-size: 2.2rem;
   text-transform: uppercase;
   cursor: pointer;
 }
 
-nav button.activo {
+nav {
+  margin-top: 1rem;
+}
+
+nav button {
+  background: transparent;
   border: 2px solid #deff77;
   color: #deff77;
-  background-color: transparent;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
+  border-radius: 15px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+nav button:hover {
+  background-color: #deff77;
+  color: #0f1e29;
 }
 
 section {
   display: none;
-  padding: 20px;
+  padding: 2rem;
 }
 
 section.visible {
   display: block;
 }
 
-button {
-  background-color: #deff77;
-  color: #0f1e29;
-  border: none;
-  padding: 10px 16px;
-  margin: 10px 0;
-  border-radius: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-input,
-select {
-  margin: 5px 0;
-  padding: 8px;
+input, select, textarea {
+  display: block;
+  margin: 0.5rem 0 1rem 0;
+  padding: 0.5rem;
   border-radius: 10px;
   border: none;
   width: 100%;
-  box-sizing: border-box;
+  font-size: 1rem;
 }
 
-table {
-  width: 100%;
-  margin-top: 10px;
-  background-color: #15232f;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid #2e3b45;
-  color: #ffffff;
-}
-
-.check-completado {
+button {
   background-color: #deff77;
   color: #0f1e29;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 15px;
   font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+button.rojo {
+  background-color: #ff4c4c;
+  color: white;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+.datos-usuario p {
+  font-size: 1.2rem;
+  margin: 0.3rem 0;
+}
+
+.tarjeta-ia {
+  background-color: #1a2d3e;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 15px;
+}
+
+#preview-foto img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: inline-block;
-  line-height: 24px;
+  cursor: pointer;
+  border: 2px solid #deff77;
 }
 
-.fila-completada {
-  opacity: 0.5;
-}
-
-#temporizador {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 1.4em;
+.desplegable h3 {
+  cursor: pointer;
   color: #deff77;
+  text-transform: uppercase;
+  margin-top: 1rem;
+}
+
+.subseccion {
+  display: none;
+  margin-top: 1rem;
+}
+
+.barra-descanso {
+  width: 100%;
+  height: 5px;
+  background-color: transparent;
+  transition: width 1s linear;
+}
+
+.barra-activa {
+  background-color: #deff77;
+  animation: cuentaAtras 5s linear forwards;
+}
+
+@keyframes cuentaAtras {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }
 
 #calendario-interactivo {
   display: grid;
-  grid-template-columns: repeat(7, 30px);
-  gap: 6px;
-  margin-top: 10px;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-top: 1rem;
 }
 
-.dia {
-  width: 30px;
-  height: 30px;
+#calendario-interactivo div {
+  width: 25px;
+  height: 25px;
+  background-color: #2c3e50;
   border-radius: 50%;
-  background-color: #15232f;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
+  font-size: 0.7rem;
 }
 
-.dia.completado {
+#calendario-interactivo .completado {
   background-color: #deff77;
   color: #0f1e29;
-  font-weight: bold;
 }
 
-#mes-calendario {
-  text-align: center;
-  color: #deff77;
-  margin-bottom: 10px;
-  font-size: 1.2em;
-}
-
-#popup-finalizar {
-  display: none;
-  background-color: #15232f;
-  color: #ffffff;
-  padding: 20px;
-  border-radius: 16px;
+.popup {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 20;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 30, 41, 0.9);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-contenido {
+  background-color: #1f2f3f;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-
-#popup-finalizar input,
-#popup-finalizar select {
-  margin-top: 5px;
-  margin-bottom: 15px;
-}
-
-.planes-grid {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-}
-
-.plan-card {
-  background-color: #15232f;
-  padding: 15px;
-  border-radius: 14px;
-  color: #ffffff;
-  border: 1px solid #2e3b45;
-}
-
-.ia-box {
-  background-color: #15232f;
-  padding: 20px;
-  border-radius: 16px;
-  margin-bottom: 20px;
-  text-align: center;
-  border: 1px solid #deff77;
-}
-
-#formulario-ia label {
-  display: block;
-  margin-bottom: 10px;
-}
-
-#nombre-usuario {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #deff77;
-  text-align: center;
-  margin: 10px 0;
-  cursor: pointer;
-  text-transform: uppercase;
-}
-
-.desplegables button {
-  background-color: #15232f;
-  color: #deff77;
-  width: 100%;
-  text-align: left;
-  border-radius: 12px;
-  margin-top: 10px;
-}
-
-.seccion-extra {
-  display: none;
-  padding: 10px;
-  background-color: #0f1e29;
-  border-radius: 12px;
-  margin-bottom: 10px;
 }
