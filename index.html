@@ -8,122 +8,119 @@
 </head>
 <body>
   <header>
-    <h1 onclick="cambiarSeccion('inicio')">ATHLETICA</h1>
+    <h1 id="nombre-usuario">ATHLETICA</h1>
     <nav>
-      <button onclick="cambiarSeccion('inicio')">INICIO</button>
-      <button onclick="cambiarSeccion('entrenamiento')">ENTRENAMIENTO</button>
-      <button onclick="cambiarSeccion('planes')">PLANES</button>
-      <button onclick="cambiarSeccion('usuario')">USUARIO</button>
-      <button onclick="cambiarSeccion('blog')">BLOG</button>
+      <button onclick="mostrarSeccion('inicio')">INICIO</button>
+      <button onclick="mostrarSeccion('entrenamiento')">ENTRENAMIENTO</button>
+      <button onclick="mostrarSeccion('usuario')">USUARIO</button>
+      <button onclick="mostrarSeccion('planes')">PLANES</button>
+      <button onclick="mostrarSeccion('blog')">BLOG</button>
     </nav>
   </header>
 
   <main>
-    <section id="inicio" class="visible">
+    <!-- INICIO -->
+    <section id="inicio" class="seccion">
       <h2>Bienvenido a Athletica</h2>
-      <p>Tu espacio para entrenar, mejorar y llevar tu rendimiento al siguiente nivel.</p>
+      <p>Tu progreso comienza aquí.</p>
     </section>
 
-    <section id="entrenamiento">
-      <h2>Entrenamiento</h2>
-      <button id="iniciar-entrenamiento" onclick="iniciarSesion()">Iniciar Sesión</button>
-      <button id="finalizar-entrenamiento" onclick="finalizarSesion()">Finalizar Sesión</button>
-      <button id="cancelar-entrenamiento" onclick="cancelarSesion()" class="cancelar">Cancelar Sesión</button>
+    <!-- ENTRENAMIENTO -->
+    <section id="entrenamiento" class="seccion" style="display:none;">
+      <h2>ENTRENAMIENTO</h2>
+      <button id="iniciarBtn">INICIAR SESIÓN</button>
+      <button id="finalizarBtn" style="display:none;">FINALIZAR SESIÓN</button>
+      <button id="cancelarBtn" style="display:none; background-color:red;">CANCELAR SESIÓN</button>
 
-      <select id="grupo-muscular">
-        <option value="">Selecciona grupo muscular</option>
-        <option value="piernas">Piernas</option>
-        <option value="espalda">Espalda</option>
-        <option value="pecho">Pecho</option>
-        <option value="brazos">Brazos</option>
-        <option value="hombros">Hombros</option>
-      </select>
+      <div class="grupo-muscular">
+        <label for="grupo-muscular">Grupo Muscular:</label>
+        <select id="grupo-muscular">
+          <option value="">Elige grupo muscular</option>
+          <option value="pecho">Pecho</option>
+          <option value="espalda">Espalda</option>
+          <option value="piernas">Piernas</option>
+          <option value="brazos">Brazos</option>
+          <option value="hombros">Hombros</option>
+        </select>
+      </div>
 
-      <select id="ejercicios" disabled></select>
+      <div class="ejercicios">
+        <label for="ejercicios">Ejercicio:</label>
+        <select id="ejercicios" disabled>
+          <option value="">Elige ejercicio</option>
+        </select>
+      </div>
 
       <div id="tabla-ejercicios"></div>
     </section>
 
-    <section id="planes">
-      <h2>Planes de entrenamiento</h2>
-      <div class="card-ia">
-        <p>¿Quieres un plan 100% adaptado a ti? Usa nuestro generador inteligente de planes</p>
-        <button onclick="toggleSubseccion('generador-ia')">GENERAR PLAN CON IA</button>
-        <div id="generador-ia" style="display: none;">
-          <label>Objetivo:
-            <select id="objetivo">
-              <option value="fuerza">Fuerza</option>
-              <option value="resistencia">Resistencia</option>
-              <option value="perdida grasa">Pérdida de grasa</option>
-            </select>
-          </label>
-          <label>Tipo entrenamiento:
-            <select id="tipo-entreno">
-              <option value="gimnasio">Gimnasio</option>
-              <option value="casa">Casa</option>
-              <option value="mixto">Mixto</option>
-            </select>
-          </label>
-          <label>Días por semana:
-            <input type="number" id="dias-semana" min="1" max="7" value="3" />
-          </label>
-          <button onclick="generarPlanIA()">CREAR PLAN INTELIGENTE</button>
-          <p id="resultado-plan"></p>
+    <!-- USUARIO -->
+    <section id="usuario" class="seccion" style="display:none;">
+      <h2>PERFIL DE USUARIO</h2>
+      <div class="perfil">
+        <label for="input-foto" class="foto-label">
+          <img id="foto-perfil" src="https://via.placeholder.com/100x100?text=+" alt="Foto perfil" />
+        </label>
+        <input type="file" id="input-foto" style="display:none;" />
+        <input type="text" id="input-nombre" placeholder="Tu nombre" />
+      </div>
+
+      <div class="botones-user">
+        <button id="btn-medidas">MEDIDAS CORPORALES</button>
+        <button id="btn-calendario">CALENDARIO</button>
+      </div>
+
+      <div id="medidas" style="display:block;">
+        <h3>MEDIDAS CORPORALES</h3>
+        <div class="medidas-grid">
+          <label>Altura (cm): <input type="number"/></label>
+          <label>Peso (kg): <input type="number"/></label>
+          <label>Brazo Izq (cm): <input type="number"/></label>
+          <label>Brazo Der (cm): <input type="number"/></label>
+          <label>Pierna Izq (cm): <input type="number"/></label>
+          <label>Pierna Der (cm): <input type="number"/></label>
+          <label>Cintura (cm): <input type="number"/></label>
+          <label>Grasa Corporal (%): <input type="number"/></label>
+        </div>
+      </div>
+
+      <div id="calendario" style="display:none;">
+        <h3>CALENDARIO</h3>
+        <div class="calendario-mes">
+          <div class="mes-titulo">Julio 2025</div>
+          <div class="dias-grid">
+            <!-- Se generan esferas aquí -->
+            <div class="dia completado">1</div>
+            <div class="dia">2</div>
+            <div class="dia completado">3</div>
+            <div class="dia">4</div>
+            <div class="dia">5</div>
+            <!-- etc... -->
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="usuario">
-      <h2 id="nombre-usuario" style="cursor:pointer;">USUARIO</h2>
-      <div id="preview-foto" onclick="document.getElementById('foto-usuario').click()">
-        <img src="default-profile.png" alt="Foto perfil" />
+    <!-- PLANES -->
+    <section id="planes" class="seccion" style="display:none;">
+      <h2>PLANES DE ENTRENAMIENTO</h2>
+      <div id="lista-planes" class="planes-grid">
+        <!-- JS los rellena -->
       </div>
-      <input type="file" id="foto-usuario" style="display:none;" onchange="mostrarFoto(this)" />
-      <button onclick="toggleSubseccion('medidas')">Medidas Corporales</button>
-      <div id="medidas" class="subseccion">
-        <div class="doble-columna">
-          <label>Brazo izquierdo:</label><input type="text" />
-          <label>Brazo derecho:</label><input type="text" />
-          <label>Pierna izquierda:</label><input type="text" />
-          <label>Pierna derecha:</label><input type="text" />
-          <label>Altura:</label><input type="text" />
-          <label>Peso:</label><input type="text" />
-          <label>% Grasa:</label><input type="text" />
-        </div>
-      </div>
-
-      <button onclick="toggleSubseccion('calendario')">Calendario de Entrenamientos</button>
-      <div id="calendario" class="subseccion">
-        <h3 id="mes-calendario">Mes</h3>
-        <div id="calendario-interactivo" class="calendario-grid"></div>
+      <div class="gamificacion">
+        <p>Puntos: <span id="puntos">0</span></p>
+        <p>Nivel: <span id="nivel">1</span></p>
       </div>
     </section>
 
-    <section id="blog">
-      <h2>Blog</h2>
-      <p>Comparte tus experiencias, consejos o rutinas con la comunidad Athletica.</p>
-      <textarea rows="6" cols="60" placeholder="Escribe tu blog aquí..."></textarea>
-      <button>Publicar</button>
+    <!-- BLOG -->
+    <section id="blog" class="seccion" style="display:none;">
+      <h2>BLOG COMUNITARIO</h2>
+      <p>Aquí los usuarios pueden compartir experiencias, consejos o rutinas.</p>
+      <textarea placeholder="Escribe tu blog aquí..."></textarea>
+      <button>PUBLICAR</button>
     </section>
   </main>
-
-  <div id="popup-final" class="popup">
-    <div class="popup-contenido">
-      <h3>¿Cómo ha sido tu sesión?</h3>
-      <label>Intensidad (0-10): <input type="number" min="0" max="10"/></label>
-      <label>Momento del día:
-        <select>
-          <option value="mañana">Mañana</option>
-          <option value="tarde">Tarde</option>
-          <option value="noche">Noche</option>
-        </select>
-      </label>
-      <label>Comentario:
-        <textarea></textarea>
-      </label>
-      <button onclick="cerrarPopup()">Guardar sesión</button>
-    </div>
-  </div>
 
   <script src="script.js"></script>
 </body>
