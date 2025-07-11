@@ -8,31 +8,39 @@
 </head>
 <body>
   <header>
-    <h1 id="titulo-web" onclick="mostrarSeccion('inicio')">ATHLETICA</h1>
+    <h1 id="nombre-usuario">ATHLETICA</h1>
     <nav>
-      <button onclick="mostrarSeccion('inicio')">INICIO</button>
-      <button onclick="mostrarSeccion('entrenamiento')">ENTRENAMIENTO</button>
-      <button onclick="mostrarSeccion('planes')">PLANES</button>
-      <button onclick="mostrarSeccion('usuario')">USUARIO</button>
-      <button onclick="mostrarSeccion('blog')">BLOG</button>
+      <button onclick="mostrarSeccion('inicio')">Inicio</button>
+      <button onclick="mostrarSeccion('entrenamiento')">Entrenamiento</button>
+      <button onclick="mostrarSeccion('planes')">Planes</button>
+      <button onclick="mostrarSeccion('usuario')">Usuario</button>
+      <button onclick="mostrarSeccion('blog')">Blog</button>
     </nav>
   </header>
 
   <!-- INICIO -->
   <section id="inicio" class="visible">
     <h2>Bienvenido a Athletica</h2>
-    <p>Juega con tu progreso. Sigue tu evolución. ¡Entrena con sentido!</p>
+    <p>¡Juega con tu progreso, gana puntos y alcanza nuevos niveles!</p>
+    <div class="datos-usuario">
+      <p>Puntos: <span id="puntos-usuario">0</span></p>
+      <p>Racha: <span id="racha-usuario">0</span></p>
+      <p>Nivel: <span id="nivel-usuario">1</span></p>
+    </div>
   </section>
 
   <!-- ENTRENAMIENTO -->
   <section id="entrenamiento">
-    <h2>Entrenamiento</h2>
-    <button onclick="iniciarTemporizador()">INICIAR SESIÓN</button>
-    <button onclick="finalizarSesion()">FINALIZAR SESIÓN</button>
-    <button onclick="cancelarEntrenamiento()">CANCELAR SESIÓN</button>
+    <h2>Inicia tu entrenamiento</h2>
+    <button id="boton-iniciar" onclick="iniciarTemporizador()">INICIAR SESIÓN</button>
+    <div id="botones-sesion" style="display: none;">
+      <button onclick="finalizarSesion()">FINALIZAR SESIÓN</button>
+      <button onclick="cancelarEntrenamiento()" class="rojo">CANCELAR SESIÓN</button>
+    </div>
 
+    <label for="grupo-muscular">Grupo muscular:</label>
     <select id="grupo-muscular" onchange="cargarEjerciciosGrupo()" disabled>
-      <option value="">-- Selecciona grupo muscular --</option>
+      <option value="">-- Elegir grupo --</option>
       <option value="pecho">Pecho</option>
       <option value="espalda">Espalda</option>
       <option value="piernas">Piernas</option>
@@ -40,111 +48,89 @@
       <option value="hombros">Hombros</option>
       <option value="core">Core</option>
     </select>
+
     <div id="selector-ejercicio"></div>
     <div id="contenedor-tablas"></div>
-
-    <div id="temporizador"></div>
   </section>
 
   <!-- PLANES -->
   <section id="planes">
-    <h2>Planes de Entrenamiento</h2>
-
-    <!-- Módulo IA -->
-    <div class="ia-box">
-      <h3>¿QUIERES UN PLAN PERSONALIZADO?</h3>
-      <p>Usa nuestro generador inteligente basado en tus objetivos y preferencias.</p>
+    <h2>Planes de entrenamiento</h2>
+    <div class="tarjeta-ia">
+      <p>¿Quieres un plan 100% adaptado a ti? Usa nuestro generador inteligente de planes</p>
       <button onclick="mostrarFormularioIA()">GENERAR PLAN CON IA</button>
     </div>
 
-    <div id="formulario-ia" style="display:none;">
-      <label>Objetivo:
-        <select id="ia-objetivo">
-          <option value="musculo">Ganar masa muscular</option>
-          <option value="fuerza">Fuerza máxima</option>
-          <option value="perder">Perder grasa</option>
-          <option value="resistencia">Resistencia</option>
-        </select>
-      </label>
-      <label>Nivel:
+    <div id="formulario-ia" style="display: none;">
+      <label>Objetivo: <input id="ia-objetivo" /></label>
+      <label>Nivel: 
         <select id="ia-nivel">
-          <option value="principiante">Principiante</option>
-          <option value="intermedio">Intermedio</option>
-          <option value="avanzado">Avanzado</option>
+          <option>Básico</option>
+          <option>Intermedio</option>
+          <option>Avanzado</option>
         </select>
       </label>
-      <label>Días disponibles por semana:
-        <input type="number" id="ia-dias" min="1" max="7" value="3" />
-      </label>
-      <label>Tipo de entrenamiento:
+      <label>Días por semana: <input type="number" id="ia-dias" /></label>
+      <label>Tipo entrenamiento: 
         <select id="ia-tipo">
-          <option value="casa">En casa</option>
-          <option value="gimnasio">Gimnasio</option>
-          <option value="mixto">Mixto</option>
+          <option>Casa</option>
+          <option>Gimnasio</option>
+          <option>Mixto</option>
         </select>
       </label>
-      <label>Equipamiento:
-        <input type="text" id="ia-equipamiento" placeholder="Ej: mancuernas, barra, bandas..." />
-      </label>
+      <label>Equipamiento disponible: <input id="ia-equipamiento" /></label>
+      <label>Altura (cm): <input id="ia-altura" type="number" /></label>
+      <label>Peso (kg): <input id="ia-peso" type="number" /></label>
+      <label>Deporte principal: <input id="ia-deporte" /></label>
+      <label>Ubicación (ciudad/país): <input id="ia-ubicacion" /></label>
       <button onclick="generarPlanIA()">CREAR PLAN INTELIGENTE</button>
     </div>
 
     <div id="plan-generado"></div>
-
-    <!-- Planes predefinidos -->
-    <div class="planes-grid">
-      <div class="plan-card">
-        <h4>Hipertrofia – Intermedio</h4>
-        <p>5 días por semana. Ideal para aumentar volumen con ejercicios básicos y accesorios.</p>
-      </div>
-      <div class="plan-card">
-        <h4>Pérdida de Grasa – Principiante</h4>
-        <p>3 días + cardio opcional. Rutina adaptada a entrenamientos cortos pero intensos.</p>
-      </div>
-      <div class="plan-card">
-        <h4>Fuerza Máxima – Avanzado</h4>
-        <p>Enfocado en cargas altas y pocas repeticiones, con seguimiento de progresión.</p>
-      </div>
-    </div>
   </section>
 
   <!-- USUARIO -->
   <section id="usuario">
     <h2>Perfil de Usuario</h2>
-    <div id="preview-foto"><img src="https://via.placeholder.com/80" /></div>
-    <input type="file" id="foto" onchange="mostrarImagenPerfil(event)" />
-    <div id="nombre-usuario">USUARIO</div>
-
-    <div class="info-box">
-      <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" oninput="actualizarNombre()" />
+    <div id="preview-foto" onclick="document.getElementById('foto-perfil').click()">
+      <img src="perfil-placeholder.png" alt="Foto perfil" />
     </div>
+    <input type="file" id="foto-perfil" style="display: none;" onchange="mostrarImagenPerfil(event)" />
 
-    <label>Tiempo descanso (segundos):
-      <input type="number" id="tiempo-descanso" min="10" max="300" value="60" />
+    <label>Nombre:
+      <input id="nombre" oninput="actualizarNombre()" />
     </label>
 
-    <div class="desplegables">
-      <button onclick="toggleDesplegable('medidas')">MEDIDAS</button>
-      <div id="medidas" class="seccion-extra">
-        <label>Altura (cm): <input></label>
-        <label>Peso (kg): <input></label>
-        <label>Brazo izquierdo (cm): <input></label>
-        <label>Brazo derecho (cm): <input></label>
-        <label>Pierna izquierda (cm): <input></label>
-        <label>Pierna derecha (cm): <input></label>
-        <label>% grasa corporal: <input></label>
+    <div class="desplegable">
+      <h3 onclick="toggleDesplegable('medidas')">MEDIDAS</h3>
+      <div id="medidas" class="subseccion">
+        <label>Brazo izquierdo: <input type="number" /></label>
+        <label>Brazo derecho: <input type="number" /></label>
+        <label>Pierna izquierda: <input type="number" /></label>
+        <label>Pierna derecha: <input type="number" /></label>
+        <label>Cintura: <input type="number" /></label>
+        <label>Altura: <input type="number" /></label>
+        <label>Peso: <input type="number" /></label>
+        <label>% Grasa corporal: <input type="number" /></label>
+      </div>
+
+      <h3 onclick="toggleDesplegable('intensidad')">INTENSIDAD</h3>
+      <div id="intensidad" class="subseccion">
+        <label>Intensidad del 0 al 10: <input type="number" min="0" max="10" /></label>
+        <label>Momento del día: 
+          <select>
+            <option>Mañana</option>
+            <option>Tarde</option>
+            <option>Noche</option>
+          </select>
+        </label>
+        <label>Comentario: <textarea></textarea></label>
       </div>
     </div>
 
-    <div id="puntos-nivel">
-      <p>Puntos: <span id="puntos-usuario">0</span></p>
-      <p>Racha: <span id="racha-usuario">0</span></p>
-      <p>Nivel: <span id="nivel-usuario">1</span></p>
-    </div>
-
-    <div id="calendario-entrenos">
-      <h3 id="mes-calendario">Julio</h3>
+    <h3>CALENDARIO</h3>
+    <div id="calendario-usuario">
+      <h4 id="mes-actual">Julio 2025</h4>
       <div id="calendario-interactivo"></div>
       <div id="graficas-por-dia"></div>
     </div>
@@ -152,24 +138,22 @@
 
   <!-- BLOG -->
   <section id="blog">
-    <h2>Blog de la Comunidad</h2>
-    <p>Cualquier usuario puede aportar ideas, artículos, consejos o experiencias.</p>
-    <p>Los usuarios activos obtendrán recompensas y puntos extra.</p>
+    <h2>Blog comunitario</h2>
+    <p>Cualquier usuario puede escribir sus experiencias, consejos y progresos aquí. ¡Comparte tu camino!</p>
+    <textarea placeholder="Escribe tu entrada de blog aquí..."></textarea>
+    <button>Publicar</button>
   </section>
 
-  <!-- POPUP FINALIZAR -->
-  <div id="popup-finalizar">
-    <h3>Finaliza tu sesión</h3>
-    <label>Intensidad (0-10): <input type="number" min="0" max="10"></label>
-    <label>Hora: 
-      <select>
-        <option value="mañana">Mañana</option>
-        <option value="tarde">Tarde</option>
-        <option value="noche">Noche</option>
-      </select>
-    </label>
-    <label>Comentario: <input></label>
-    <button onclick="cerrarPopup()">GUARDAR</button>
+  <!-- TEMPORIZADOR ENTRE SERIES -->
+  <div id="temporizador" class="barra-descanso"></div>
+
+  <!-- POPUP -->
+  <div id="popup-finalizar" class="popup">
+    <div class="popup-contenido">
+      <h3>Finalizar sesión</h3>
+      <p>¿Cómo ha sido tu entrenamiento hoy?</p>
+      <button onclick="cerrarPopup()">Cerrar</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
