@@ -1,66 +1,83 @@
-/* ======== GENERAL ======== */
-body {
+/* Reset básico */
+* {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #0f1e29;
-  color: #ffffff;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
   text-transform: uppercase;
 }
 
-h1, h2, h3 {
-  color: #deff77;
-}
-
-.seccion {
+body {
+  background-color: #0f1e29;
+  color: white;
   padding: 20px;
 }
 
-/* ======== NAVIGATION ======== */
 header {
   background-color: #0f1e29;
-  padding: 10px;
+  padding: 20px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  border-bottom: 2px solid #deff77;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-nav {
-  margin-top: 10px;
+h1 {
+  font-size: 2rem;
+  color: #deff77;
+  cursor: pointer;
 }
 
 nav button {
   background: transparent;
-  border: 2px solid #deff77;
+  border: 2px solid transparent;
+  color: white;
+  padding: 8px 12px;
+  margin-left: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+nav button.activo {
+  border-color: #deff77;
   color: #deff77;
-  border-radius: 20px;
-  padding: 8px 15px;
-  margin: 5px;
+}
+
+main {
+  margin-top: 30px;
+}
+
+.seccion {
+  display: none;
+}
+
+.seccion.visible {
+  display: block;
+}
+
+#seleccion select {
+  margin: 10px 5px;
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+button {
+  background-color: #deff77;
+  color: #0f1e29;
+  border: none;
+  padding: 10px 15px;
+  margin: 10px 5px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: bold;
 }
 
-nav button:hover,
-nav button.active {
-  background-color: #deff77;
-  color: #0f1e29;
-}
-
-/* ======== ENTRENAMIENTO ======== */
-.grupo-muscular,
-.ejercicios {
-  margin: 15px 0;
-}
-
-select {
-  padding: 6px;
-  border-radius: 10px;
-  border: none;
-  font-weight: bold;
+button.rojo {
+  background-color: #ff4c4c;
+  color: white;
 }
 
 #tabla-ejercicios {
@@ -70,186 +87,124 @@ select {
 .tabla-ejercicio {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 20px;
 }
 
-.tabla-ejercicio th,
-.tabla-ejercicio td {
-  border: 1px solid #deff77;
+.tabla-ejercicio th, .tabla-ejercicio td {
+  border: 1px solid white;
   padding: 8px;
   text-align: center;
-}
-
-.boton-verde {
-  background-color: #deff77;
-  color: #0f1e29;
-  border: none;
-  border-radius: 10px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.boton-check {
-  background-color: transparent;
-  color: #deff77;
-  font-size: 20px;
-  border: none;
-  cursor: pointer;
 }
 
 .fila-completada {
   opacity: 0.4;
 }
 
-/* Timer entre series */
-.timer-barra {
-  height: 8px;
+.timer-bar {
+  height: 10px;
   background-color: #deff77;
-  animation: descanso 5s linear forwards;
+  margin: 5px 0;
+  border-radius: 6px;
+  transition: width 1s linear;
+}
+
+.plan {
+  background-color: #142836;
+  padding: 15px;
+  border-radius: 12px;
   margin: 10px 0;
 }
 
-@keyframes descanso {
-  from { width: 100%; }
-  to { width: 0%; }
-}
-
-/* ======== USUARIO ======== */
-.perfil {
+#perfil {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-.foto-label img {
+#siluetaPerfil {
   width: 100px;
   height: 100px;
-  border-radius: 100%;
-  object-fit: cover;
+  background-color: gray;
+  border-radius: 50%;
+  display: inline-block;
+  background-image: url('silueta.png'); /* opcional */
+  background-size: cover;
   cursor: pointer;
-  border: 2px solid #deff77;
 }
 
-#input-nombre {
-  margin-top: 10px;
-  padding: 5px;
-  font-weight: bold;
-  border: none;
+input[type="file"] {
+  display: none;
+}
+
+.grid-medidas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+details {
+  background-color: #122531;
+  padding: 10px;
+  margin: 10px 0;
   border-radius: 10px;
 }
 
-.botones-user {
-  display: flex;
-  gap: 10px;
-  margin: 20px 0;
-}
-
-.botones-user button {
-  background-color: transparent;
-  border: 2px solid #deff77;
-  color: #deff77;
-  padding: 8px 12px;
-  border-radius: 20px;
+details summary {
   cursor: pointer;
-}
-
-.medidas-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  max-width: 400px;
-}
-
-/* ======== CALENDARIO ======== */
-.calendario-mes {
-  text-align: center;
-}
-
-.mes-titulo {
-  font-size: 20px;
-  margin-bottom: 10px;
   color: #deff77;
+  font-weight: bold;
 }
 
-.dias-grid {
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  resize: vertical;
+}
+
+input, select {
+  padding: 8px;
+  margin: 5px;
+  border-radius: 10px;
+  border: none;
+}
+
+#calendario-usuario {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-  justify-items: center;
+  gap: 4px;
+  margin-top: 10px;
 }
 
-.dia {
+.cal-dia {
   width: 30px;
   height: 30px;
-  background-color: #ffffff20;
   border-radius: 50%;
+  background-color: #122531;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 0.8rem;
   cursor: pointer;
 }
 
-.dia.completado {
+.cal-dia.completado {
   background-color: #deff77;
   color: #0f1e29;
-  font-weight: bold;
 }
 
-/* ======== PLANES & GAMIFICACIÓN ======== */
-.planes-grid {
+#formIA {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-top: 15px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.plan-card {
-  border: 2px solid #deff77;
-  border-radius: 15px;
-  padding: 15px;
-  background-color: #0f1e29;
-}
-
-.gamificacion {
-  margin-top: 30px;
-  font-size: 18px;
-}
-
-/* ======== BLOG ======== */
-#blog textarea {
-  width: 100%;
-  height: 150px;
-  border-radius: 15px;
+#resultadoIA {
+  margin-top: 10px;
+  background-color: #122531;
   padding: 10px;
-  border: none;
-  font-family: inherit;
-  margin-bottom: 10px;
-}
-
-#blog button {
-  background-color: #deff77;
-  color: #0f1e29;
-  font-weight: bold;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-/* ======== RESPONSIVE ======== */
-@media (max-width: 600px) {
-  .medidas-grid {
-    grid-template-columns: 1fr;
-  }
-
-  nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  nav button {
-    margin: 3px;
-    font-size: 12px;
-  }
+  border-radius: 10px;
 }
