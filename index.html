@@ -8,7 +8,7 @@
 </head>
 <body>
   <header>
-    <h1 id="titulo">ATHLETICA</h1>
+    <h1 id="titulo-web" onclick="mostrarSeccion('inicio')">ATHLETICA</h1>
     <nav>
       <button onclick="mostrarSeccion('inicio')">INICIO</button>
       <button onclick="mostrarSeccion('entrenamiento')">ENTRENAMIENTO</button>
@@ -18,22 +18,21 @@
     </nav>
   </header>
 
+  <!-- INICIO -->
   <section id="inicio" class="visible">
     <h2>Bienvenido a Athletica</h2>
-    <p>Tu plataforma inteligente de entrenamiento, progreso y salud.</p>
+    <p>Juega con tu progreso. Sigue tu evolución. ¡Entrena con sentido!</p>
   </section>
 
+  <!-- ENTRENAMIENTO -->
   <section id="entrenamiento">
-    <h2>Sesión de Entrenamiento</h2>
-    <div id="temporizador">00:00:00</div>
-    <button onclick="iniciarTemporizador()">INICIAR</button>
-    <button onclick="finalizarSesion()">FINALIZAR</button>
-    <button onclick="cancelarEntrenamiento()">CANCELAR</button>
-    <br /><br />
-    <label>Tiempo descanso (seg): <input id="tiempo-descanso" type="number" value="60" /></label>
-    <br />
-    <select id="grupo-muscular" disabled onchange="cargarEjerciciosGrupo()">
-      <option value="">-- Elegir grupo muscular --</option>
+    <h2>Entrenamiento</h2>
+    <button onclick="iniciarTemporizador()">INICIAR SESIÓN</button>
+    <button onclick="finalizarSesion()">FINALIZAR SESIÓN</button>
+    <button onclick="cancelarEntrenamiento()">CANCELAR SESIÓN</button>
+
+    <select id="grupo-muscular" onchange="cargarEjerciciosGrupo()" disabled>
+      <option value="">-- Selecciona grupo muscular --</option>
       <option value="pecho">Pecho</option>
       <option value="espalda">Espalda</option>
       <option value="piernas">Piernas</option>
@@ -41,109 +40,136 @@
       <option value="hombros">Hombros</option>
       <option value="core">Core</option>
     </select>
-
     <div id="selector-ejercicio"></div>
     <div id="contenedor-tablas"></div>
+
+    <div id="temporizador"></div>
   </section>
 
+  <!-- PLANES -->
   <section id="planes">
     <h2>Planes de Entrenamiento</h2>
-    <div class="plan">
-      <h3>💪 Principiantes - Fullbody 3 días</h3>
-      <ul>
-        <li>Lunes: Pecho, espalda, core</li>
-        <li>Miércoles: Piernas, hombros</li>
-        <li>Viernes: Fullbody circuito</li>
-      </ul>
+
+    <!-- Módulo IA -->
+    <div class="ia-box">
+      <h3>¿QUIERES UN PLAN PERSONALIZADO?</h3>
+      <p>Usa nuestro generador inteligente basado en tus objetivos y preferencias.</p>
+      <button onclick="mostrarFormularioIA()">GENERAR PLAN CON IA</button>
     </div>
-    <div class="plan">
-      <h3>🔥 Definición - 4 días</h3>
-      <ul>
-        <li>Lunes: Cardio HIIT + Piernas</li>
-        <li>Martes: Pecho y tríceps</li>
-        <li>Jueves: Espalda y bíceps</li>
-        <li>Viernes: Core + Hombros</li>
-      </ul>
+
+    <div id="formulario-ia" style="display:none;">
+      <label>Objetivo:
+        <select id="ia-objetivo">
+          <option value="musculo">Ganar masa muscular</option>
+          <option value="fuerza">Fuerza máxima</option>
+          <option value="perder">Perder grasa</option>
+          <option value="resistencia">Resistencia</option>
+        </select>
+      </label>
+      <label>Nivel:
+        <select id="ia-nivel">
+          <option value="principiante">Principiante</option>
+          <option value="intermedio">Intermedio</option>
+          <option value="avanzado">Avanzado</option>
+        </select>
+      </label>
+      <label>Días disponibles por semana:
+        <input type="number" id="ia-dias" min="1" max="7" value="3" />
+      </label>
+      <label>Tipo de entrenamiento:
+        <select id="ia-tipo">
+          <option value="casa">En casa</option>
+          <option value="gimnasio">Gimnasio</option>
+          <option value="mixto">Mixto</option>
+        </select>
+      </label>
+      <label>Equipamiento:
+        <input type="text" id="ia-equipamiento" placeholder="Ej: mancuernas, barra, bandas..." />
+      </label>
+      <button onclick="generarPlanIA()">CREAR PLAN INTELIGENTE</button>
     </div>
-    <div class="plan">
-      <h3>🏋️‍♂️ Volumen - 5 días</h3>
-      <ul>
-        <li>Lunes: Pecho</li>
-        <li>Martes: Espalda</li>
-        <li>Miércoles: Piernas</li>
-        <li>Jueves: Hombros</li>
-        <li>Viernes: Brazos</li>
-      </ul>
+
+    <div id="plan-generado"></div>
+
+    <!-- Planes predefinidos -->
+    <div class="planes-grid">
+      <div class="plan-card">
+        <h4>Hipertrofia – Intermedio</h4>
+        <p>5 días por semana. Ideal para aumentar volumen con ejercicios básicos y accesorios.</p>
+      </div>
+      <div class="plan-card">
+        <h4>Pérdida de Grasa – Principiante</h4>
+        <p>3 días + cardio opcional. Rutina adaptada a entrenamientos cortos pero intensos.</p>
+      </div>
+      <div class="plan-card">
+        <h4>Fuerza Máxima – Avanzado</h4>
+        <p>Enfocado en cargas altas y pocas repeticiones, con seguimiento de progresión.</p>
+      </div>
     </div>
   </section>
 
+  <!-- USUARIO -->
   <section id="usuario">
-    <h2 onclick="mostrarSeccion('inicio')" id="nombre-usuario">NOMBRE_USUARIO</h2>
+    <h2>Perfil de Usuario</h2>
+    <div id="preview-foto"><img src="https://via.placeholder.com/80" /></div>
+    <input type="file" id="foto" onchange="mostrarImagenPerfil(event)" />
+    <div id="nombre-usuario">USUARIO</div>
 
-    <div class="desplegable" onclick="toggleDesplegable('medidas')">
-      <h3>📏 Medidas Corporales</h3>
-      <div id="medidas" class="contenido-desplegable">
-        <input placeholder="Altura (cm)" />
-        <input placeholder="Peso (kg)" />
-        <input placeholder="Brazo Izq (cm)" />
-        <input placeholder="Brazo Dcho (cm)" />
-        <input placeholder="Pierna Izq (cm)" />
-        <input placeholder="Pierna Dcha (cm)" />
-        <input placeholder="% Grasa corporal" />
+    <div class="info-box">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" oninput="actualizarNombre()" />
+    </div>
+
+    <label>Tiempo descanso (segundos):
+      <input type="number" id="tiempo-descanso" min="10" max="300" value="60" />
+    </label>
+
+    <div class="desplegables">
+      <button onclick="toggleDesplegable('medidas')">MEDIDAS</button>
+      <div id="medidas" class="seccion-extra">
+        <label>Altura (cm): <input></label>
+        <label>Peso (kg): <input></label>
+        <label>Brazo izquierdo (cm): <input></label>
+        <label>Brazo derecho (cm): <input></label>
+        <label>Pierna izquierda (cm): <input></label>
+        <label>Pierna derecha (cm): <input></label>
+        <label>% grasa corporal: <input></label>
       </div>
     </div>
 
-    <div class="desplegable" onclick="toggleDesplegable('datos-sesion')">
-      <h3>📅 Datos de la Sesión</h3>
-      <div id="datos-sesion" class="contenido-desplegable">
-        <input placeholder="Comentario" />
-        <input placeholder="Intensidad (0-10)" />
-        <select><option>Mañana</option><option>Tarde</option><option>Noche</option></select>
-      </div>
+    <div id="puntos-nivel">
+      <p>Puntos: <span id="puntos-usuario">0</span></p>
+      <p>Racha: <span id="racha-usuario">0</span></p>
+      <p>Nivel: <span id="nivel-usuario">1</span></p>
     </div>
 
-    <div class="desplegable" onclick="toggleDesplegable('perfil')">
-      <h3>👤 Perfil</h3>
-      <div id="perfil" class="contenido-desplegable">
-        <div id="preview-foto"><img src="avatar.png" /></div>
-        <input type="file" onchange="mostrarImagenPerfil(event)" />
-      </div>
+    <div id="calendario-entrenos">
+      <h3 id="mes-calendario">Julio</h3>
+      <div id="calendario-interactivo"></div>
+      <div id="graficas-por-dia"></div>
     </div>
-
-    <div class="desplegable" onclick="toggleDesplegable('estadisticas')">
-      <h3>📈 Progreso</h3>
-      <div id="estadisticas" class="contenido-desplegable">
-        <p>Puntos: <span id="puntos-usuario">0</span></p>
-        <p>Racha: <span id="racha-usuario">0</span></p>
-        <p>Nivel: <span id="nivel-usuario">1</span></p>
-      </div>
-    </div>
-
-    <h3>🗓 Calendario</h3>
-    <div id="mes-calendario"></div>
-    <div id="calendario-interactivo"></div>
-    <div id="graficas-por-dia"></div>
   </section>
 
+  <!-- BLOG -->
   <section id="blog">
-    <h2>BLOG DE LA COMUNIDAD</h2>
-    <p>Cualquier usuario puede compartir artículos, reflexiones o consejos de entrenamiento.</p>
-    <textarea placeholder="Escribe tu blog aquí..."></textarea>
-    <button>PUBLICAR</button>
+    <h2>Blog de la Comunidad</h2>
+    <p>Cualquier usuario puede aportar ideas, artículos, consejos o experiencias.</p>
+    <p>Los usuarios activos obtendrán recompensas y puntos extra.</p>
   </section>
 
-  <div id="popup-finalizar" class="popup">
-    <div class="popup-contenido">
-      <p>¿Cómo fue tu entrenamiento?</p>
-      <input placeholder="Comentario" />
+  <!-- POPUP FINALIZAR -->
+  <div id="popup-finalizar">
+    <h3>Finaliza tu sesión</h3>
+    <label>Intensidad (0-10): <input type="number" min="0" max="10"></label>
+    <label>Hora: 
       <select>
-        <option>Mañana</option>
-        <option>Tarde</option>
-        <option>Noche</option>
+        <option value="mañana">Mañana</option>
+        <option value="tarde">Tarde</option>
+        <option value="noche">Noche</option>
       </select>
-      <input type="number" placeholder="Intensidad del 0 al 10" />
-      <button onclick="cerrarPopup()">GUARDAR</button>
-    </div>
+    </label>
+    <label>Comentario: <input></label>
+    <button onclick="cerrarPopup()">GUARDAR</button>
   </div>
 
   <script src="script.js"></script>
