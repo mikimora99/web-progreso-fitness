@@ -1,149 +1,124 @@
-let entrenamientos = [];
-let timerDescanso = null;
-let tiempoDescanso = 30;
+let sesionIniciada = false;
+let datosEntrenamiento = [];
 
 function cambiarSeccion(id) {
-  document.querySelectorAll("section").forEach(sec => sec.classList.remove("visible"));
+  document.querySelectorAll("main section").forEach(sec => {
+    sec.classList.remove("visible");
+  });
   document.getElementById(id).classList.add("visible");
 }
 
-document.getElementById("nombre-usuario").addEventListener("click", () => cambiarSeccion('inicio'));
-
 function iniciarSesion() {
-  document.getElementById("iniciar-entrenamiento").disabled = true;
+  sesionIniciada = true;
   document.getElementById("finalizar-entrenamiento").style.display = "inline-block";
   document.getElementById("cancelar-entrenamiento").style.display = "inline-block";
   document.getElementById("grupo-muscular").disabled = false;
-  document.getElementById("ejercicios").disabled = false;
+}
+
+function finalizarSesion() {
+  clearInterval(timerInterval);
+  document.getElementById("popup-final").style.display = "flex";
 }
 
 function cancelarSesion() {
-  if (timerDescanso) clearTimeout(timerDescanso);
-  reiniciarSesion();
-}
-
-function reiniciarSesion() {
-  document.getElementById("iniciar-entrenamiento").disabled = false;
+  clearInterval(timerInterval);
+  sesionIniciada = false;
   document.getElementById("finalizar-entrenamiento").style.display = "none";
   document.getElementById("cancelar-entrenamiento").style.display = "none";
-  document.getElementById("grupo-muscular").value = "";
+  document.getElementById("grupo-muscular").disabled = true;
   document.getElementById("ejercicios").innerHTML = "";
   document.getElementById("tabla-ejercicios").innerHTML = "";
 }
 
-function finalizarSesion() {
-  if (timerDescanso) clearTimeout(timerDescanso);
-  document.getElementById("popup-final").style.display = "flex";
-}
-
 function cerrarPopup() {
   document.getElementById("popup-final").style.display = "none";
-  guardarSesion();
-  reiniciarSesion();
+  marcarDiaCalendario();
+  cancelarSesion();
 }
 
-function guardarSesion() {
-  const fecha = new Date();
-  entrenamientos.push(fecha.toISOString().split("T")[0]);
-  generarCalendario(new Date().getFullYear(), new Date().getMonth());
-}
+document.getElementById("grupo-muscular").addEventListener("change", function () {
+  const grupo = this.value;
+  const selectEjercicios = document.getElementById("ejercicios");
+  selectEjercicios.innerHTML = "";
+  document.getElementById("tabla-ejercicios").innerHTML = "";
 
-function seleccionarGrupo() {
-  const grupo = document.getElementById("grupo-muscular").value;
-  const select = document.getElementById("ejercicios");
-  const ejerciciosPorGrupo = {
-    piernas: ["Sentadillas", "Prensa", "Zancadas", "Peso muerto rumano", "Extensiones", "Curl femoral"],
-    espalda: ["Dominadas", "Remo", "Peso muerto", "Jalones", "Pullover"],
-    pecho: ["Press banca", "Aperturas", "Fondos", "Press inclinado"],
-    brazos: ["Curl bíceps", "Press francés", "Martillo", "Extensión triceps"],
-    hombros: ["Press militar", "Elevaciones laterales", "Pájaros", "Remo mentón"]
-  };
-  select.innerHTML = ejerciciosPorGrupo[grupo].map(ej => `<option value="${ej}">${ej}</option>`).join("");
-  select.onchange = generarTablaEjercicios;
-}
+  if (grupo) {
+    selectEjercicios.disabled = false;
+    const ejercicios = {
+      piernas: ["Sentadillas", "Prensa", "Zancadas", "Peso muerto rumano", "Extensiones", "Curl femoral"],
+      espalda: ["Dominadas", "Remo con barra", "Jalones al pecho", "Peso muerto", "Pull over"],
+      pecho: ["Press banca", "Press inclinado", "Aperturas", "Fondos", "Flexiones"],
+      brazos: ["Curl bíceps", "Press francés", "Fondos paralelas", "Martillo", "Curl concentrado"],
+      hombros: ["Press militar", "Elevaciones laterales", "Pájaros", "Arnold press", "Press con mancuernas"]
+    };
 
-function generarTablaEjercicios() {
-  const ejercicio = document.getElementById("ejercicios").value;
-  const tabla = document.getElementById("tabla-ejercicios");
+    ejercicios[grupo].forEach(ej => {
+      const opt = document.createElement("option");
+      opt.textContent = ej;
+      selectEjercicios.appendChild(opt);
+    });
+  }
+});
+
+document.getElementById("ejercicios").addEventListener("change", function () {
+  const ejercicio = this.value;
+  if (!ejercicio) return;
+
+  const tabla = document.createElement("table");
   tabla.innerHTML = `
-    <table>
-      <tr><th>Serie</th><th>Anterior</th><th>Actual</th><th></th></tr>
-      <tbody id="series-body">
-        <tr>
-          <td>1</td>
-          <td>50kg x 10</td>
-          <td><input type="text" placeholder="kg x rep" /></td>
-          <td><button onclick="completarSerie(this)">✔</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <button onclick="anadirSerie()">Añadir Serie</button>
+    <thead><tr><th>Serie</th><th>Peso (kg)</th><th>Reps</th><th></th><th></th></tr></thead>
+    <tbody id="cuerpo-tabla">
+    </tbody>
   `;
-}
+  document.getElementById("tabla-ejercicios").innerHTML = "";
+  document.getElementById("tabla-ejercicios").appendChild(tabla);
 
-function anadirSerie() {
-  const tbody = document.getElementById("series-body");
-  const serieNum = tbody.rows.length + 1;
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td>${serieNum}</td>
-    <td>50kg x 10</td>
-    <td><input type="text" placeholder="kg x rep" /></td>
+  añadirSerie();
+});
+
+function añadirSerie() {
+  const cuerpo = document.getElementById("cuerpo-tabla");
+  const fila = document.createElement("tr");
+  fila.innerHTML = `
+    <td>${cuerpo.children.length + 1}</td>
+    <td><input type="number" /></td>
+    <td><input type="number" /></td>
+    <td class="barra-descanso"></td>
     <td><button onclick="completarSerie(this)">✔</button></td>
   `;
-  tbody.appendChild(row);
+  cuerpo.appendChild(fila);
 }
 
 function completarSerie(boton) {
   const fila = boton.parentElement.parentElement;
-  fila.style.opacity = "0.5";
-  iniciarDescanso(fila);
+  fila.style.opacity = "0.4";
+  iniciarTimerDescanso(fila.querySelector(".barra-descanso"));
 }
 
-function iniciarDescanso(fila) {
-  const barra = document.createElement("div");
-  barra.className = "barra-descanso barra-activa";
-  fila.insertAdjacentElement('afterend', barra);
-
-  if (timerDescanso) clearTimeout(timerDescanso);
-  timerDescanso = setTimeout(() => {
-    barra.remove();
-  }, tiempoDescanso * 1000);
+let timerInterval;
+function iniciarTimerDescanso(barra) {
+  barra.classList.add("barra-activa");
+  setTimeout(() => {
+    barra.classList.remove("barra-activa");
+  }, 5000);
 }
 
 function mostrarFoto(input) {
-  const preview = document.getElementById("preview-foto");
+  const preview = document.querySelector("#preview-foto img");
   const file = input.files[0];
   const reader = new FileReader();
-  reader.onload = e => {
-    preview.innerHTML = `<img src="${e.target.result}" alt="foto perfil" />`;
+
+  reader.onloadend = () => {
+    preview.src = reader.result;
   };
-  if (file) reader.readAsDataURL(file);
-}
-
-function generarCalendario(año, mes) {
-  const contenedor = document.getElementById("calendario-interactivo");
-  contenedor.innerHTML = "";
-  const fecha = new Date(año, mes, 1);
-  const diaInicio = fecha.getDay();
-  const diasMes = new Date(año, mes + 1, 0).getDate();
-  const mesActual = document.getElementById("mes-calendario");
-  mesActual.innerText = `${fecha.toLocaleDateString("es-ES", { month: "long" })} ${año}`;
-
-  for (let i = 0; i < diaInicio; i++) {
-    contenedor.innerHTML += `<div></div>`;
-  }
-
-  for (let d = 1; d <= diasMes; d++) {
-    const diaStr = `${año}-${String(mes + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-    const clase = entrenamientos.includes(diaStr) ? "completado" : "";
-    contenedor.innerHTML += `<div class="${clase}">${d}</div>`;
+  if (file) {
+    reader.readAsDataURL(file);
   }
 }
 
 function toggleSubseccion(id) {
-  const sub = document.getElementById(id);
-  sub.style.display = sub.style.display === "block" ? "none" : "block";
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
 function generarPlanIA() {
@@ -151,23 +126,45 @@ function generarPlanIA() {
   const tipo = document.getElementById("tipo-entreno").value;
   const dias = document.getElementById("dias-semana").value;
 
-  let resultado = `Plan para objetivo: ${objetivo} en modalidad ${tipo}, entrenando ${dias} días.`;
-
-  if (objetivo === "fuerza") {
-    resultado += " Se recomienda trabajar torso/pierna con carga progresiva.";
-  } else if (objetivo === "resistencia") {
-    resultado += " Alterna días de cardio con circuitos funcionales.";
-  } else {
-    resultado += " Trabaja cuerpo completo, prioriza técnica y alimentación limpia.";
-  }
-
-  document.getElementById("resultado-plan").innerText = resultado;
+  document.getElementById("resultado-plan").textContent = `Plan creado: ${objetivo}, en modo ${tipo}, ${dias} días/semana. (Versión IA BETA – se mejorará pronto con formularios más completos).`;
 }
 
-window.onload = () => {
-  generarCalendario(new Date().getFullYear(), new Date().getMonth());
+function marcarDiaCalendario() {
+  const hoy = new Date();
+  const dia = hoy.getDate();
+  const elementos = document.querySelectorAll("#calendario-interactivo div");
+  elementos.forEach(el => {
+    if (parseInt(el.textContent) === dia) {
+      el.classList.add("completado");
+    }
+  });
+}
+
+function generarCalendario() {
+  const grid = document.getElementById("calendario-interactivo");
+  const nombreMes = document.getElementById("mes-calendario");
+  const hoy = new Date();
+  const mesActual = hoy.getMonth();
+  const año = hoy.getFullYear();
+
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+                 "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  nombreMes.textContent = meses[mesActual];
+
+  const diasMes = new Date(año, mesActual + 1, 0).getDate();
+  grid.innerHTML = "";
+
+  for (let i = 1; i <= diasMes; i++) {
+    const dia = document.createElement("div");
+    dia.textContent = i;
+    dia.onclick = () => alert(`Sesión del día ${i} (pronto se mostrará toda la info aquí)`);
+    grid.appendChild(dia);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("finalizar-entrenamiento").style.display = "none";
   document.getElementById("cancelar-entrenamiento").style.display = "none";
-  document.getElementById("grupo-muscular").addEventListener("change", seleccionarGrupo);
-  document.getElementById("ejercicios").disabled = true;
-};
+  document.getElementById("grupo-muscular").disabled = true;
+  generarCalendario();
+});
