@@ -8,117 +8,127 @@
 </head>
 <body>
   <header>
-    <h1 id="nombre-usuario">ATHLETICA</h1>
+    <h1 id="nombreUsuario" onclick="irAInicio()">ATHLETICA</h1>
     <nav>
-      <button onclick="mostrarSeccion('inicio')">INICIO</button>
-      <button onclick="mostrarSeccion('entrenamiento')">ENTRENAMIENTO</button>
-      <button onclick="mostrarSeccion('usuario')">USUARIO</button>
-      <button onclick="mostrarSeccion('planes')">PLANES</button>
-      <button onclick="mostrarSeccion('blog')">BLOG</button>
+      <button onclick="mostrarSeccion('inicio')" id="btn-inicio">Inicio</button>
+      <button onclick="mostrarSeccion('entrenamiento')" id="btn-entrenamiento">Entrenamiento</button>
+      <button onclick="mostrarSeccion('planes')" id="btn-planes">Planes</button>
+      <button onclick="mostrarSeccion('usuario')" id="btn-usuario">Usuario</button>
+      <button onclick="mostrarSeccion('blog')" id="btn-blog">Blog</button>
     </nav>
   </header>
 
   <main>
-    <!-- INICIO -->
-    <section id="inicio" class="seccion">
+    <section id="inicio" class="seccion visible">
       <h2>Bienvenido a Athletica</h2>
-      <p>Tu progreso comienza aquí.</p>
     </section>
 
-    <!-- ENTRENAMIENTO -->
-    <section id="entrenamiento" class="seccion" style="display:none;">
-      <h2>ENTRENAMIENTO</h2>
-      <button id="iniciarBtn">INICIAR SESIÓN</button>
-      <button id="finalizarBtn" style="display:none;">FINALIZAR SESIÓN</button>
-      <button id="cancelarBtn" style="display:none; background-color:red;">CANCELAR SESIÓN</button>
+    <section id="entrenamiento" class="seccion">
+      <h2>Entrenamiento</h2>
+      <button id="iniciarBtn">Iniciar sesión</button>
+      <button id="finalizarBtn" class="oculto">Finalizar sesión</button>
+      <button id="cancelarBtn" class="oculto rojo">Cancelar sesión</button>
 
-      <div class="grupo-muscular">
-        <label for="grupo-muscular">Grupo Muscular:</label>
+      <div id="seleccion">
         <select id="grupo-muscular">
-          <option value="">Elige grupo muscular</option>
+          <option value="">Selecciona grupo muscular</option>
           <option value="pecho">Pecho</option>
           <option value="espalda">Espalda</option>
           <option value="piernas">Piernas</option>
           <option value="brazos">Brazos</option>
           <option value="hombros">Hombros</option>
         </select>
-      </div>
 
-      <div class="ejercicios">
-        <label for="ejercicios">Ejercicio:</label>
         <select id="ejercicios" disabled>
-          <option value="">Elige ejercicio</option>
+          <option value="">Selecciona ejercicio</option>
         </select>
       </div>
 
       <div id="tabla-ejercicios"></div>
     </section>
 
-    <!-- USUARIO -->
-    <section id="usuario" class="seccion" style="display:none;">
-      <h2>PERFIL DE USUARIO</h2>
-      <div class="perfil">
-        <label for="input-foto" class="foto-label">
-          <img id="foto-perfil" src="https://via.placeholder.com/100x100?text=+" alt="Foto perfil" />
-        </label>
-        <input type="file" id="input-foto" style="display:none;" />
-        <input type="text" id="input-nombre" placeholder="Tu nombre" />
-      </div>
-
-      <div class="botones-user">
-        <button id="btn-medidas">MEDIDAS CORPORALES</button>
-        <button id="btn-calendario">CALENDARIO</button>
-      </div>
-
-      <div id="medidas" style="display:block;">
-        <h3>MEDIDAS CORPORALES</h3>
-        <div class="medidas-grid">
-          <label>Altura (cm): <input type="number"/></label>
-          <label>Peso (kg): <input type="number"/></label>
-          <label>Brazo Izq (cm): <input type="number"/></label>
-          <label>Brazo Der (cm): <input type="number"/></label>
-          <label>Pierna Izq (cm): <input type="number"/></label>
-          <label>Pierna Der (cm): <input type="number"/></label>
-          <label>Cintura (cm): <input type="number"/></label>
-          <label>Grasa Corporal (%): <input type="number"/></label>
+    <section id="planes" class="seccion">
+      <h2>Planes de Entrenamiento</h2>
+      <div id="planes-predefinidos">
+        <div class="plan">
+          <h3>Fuerza Intermedia</h3>
+          <p>5 días por semana con enfoque en fuerza y volumen muscular.</p>
+        </div>
+        <div class="plan">
+          <h3>Inicio en Casa</h3>
+          <p>Entrenamientos con peso corporal sin necesidad de gimnasio.</p>
+        </div>
+        <div class="plan">
+          <h3>Pérdida de Grasa</h3>
+          <p>Alta intensidad con cardio y fuerza para perder grasa.</p>
         </div>
       </div>
 
-      <div id="calendario" style="display:none;">
-        <h3>CALENDARIO</h3>
-        <div class="calendario-mes">
-          <div class="mes-titulo">Julio 2025</div>
-          <div class="dias-grid">
-            <!-- Se generan esferas aquí -->
-            <div class="dia completado">1</div>
-            <div class="dia">2</div>
-            <div class="dia completado">3</div>
-            <div class="dia">4</div>
-            <div class="dia">5</div>
-            <!-- etc... -->
-          </div>
+      <h3>IA - Plan personalizado</h3>
+      <form id="formIA">
+        <input type="number" placeholder="Altura (cm)" required />
+        <input type="number" placeholder="Peso (kg)" required />
+        <select required>
+          <option value="">Tipo de entrenamiento</option>
+          <option value="fuerza">Fuerza</option>
+          <option value="hipertrofia">Hipertrofia</option>
+          <option value="cardio">Cardio</option>
+        </select>
+        <input type="text" placeholder="Deporte principal (opcional)" />
+        <button type="submit">Generar plan</button>
+      </form>
+      <div id="resultadoIA"></div>
+    </section>
+
+    <section id="usuario" class="seccion">
+      <h2>Perfil de Usuario</h2>
+      <div id="perfil">
+        <label for="fotoPerfil" id="siluetaPerfil"></label>
+        <input type="file" id="fotoPerfil" class="oculto" />
+      </div>
+
+      <div class="info-usuario">
+        <label>Nombre:</label>
+        <input type="text" id="nombrePersonalizado" placeholder="Tu nombre" />
+      </div>
+
+      <details>
+        <summary>Medidas corporales</summary>
+        <div class="grid-medidas">
+          <input placeholder="Altura (cm)" />
+          <input placeholder="Peso (kg)" />
+          <input placeholder="Brazo izquierdo (cm)" />
+          <input placeholder="Brazo derecho (cm)" />
+          <input placeholder="Pierna izquierda (cm)" />
+          <input placeholder="Pierna derecha (cm)" />
+          <input placeholder="Cintura (cm)" />
+          <input placeholder="% Grasa corporal" />
         </div>
-      </div>
+      </details>
+
+      <details>
+        <summary>Calendario</summary>
+        <div id="calendario-usuario"></div>
+      </details>
+
+      <details>
+        <summary>Opinión tras sesión</summary>
+        <input type="number" min="0" max="10" placeholder="Intensidad (0-10)" />
+        <select>
+          <option value="">¿Cuándo has entrenado?</option>
+          <option value="mañana">Mañana</option>
+          <option value="tarde">Tarde</option>
+          <option value="noche">Noche</option>
+        </select>
+        <textarea placeholder="Comentario sobre la sesión"></textarea>
+      </details>
     </section>
 
-    <!-- PLANES -->
-    <section id="planes" class="seccion" style="display:none;">
-      <h2>PLANES DE ENTRENAMIENTO</h2>
-      <div id="lista-planes" class="planes-grid">
-        <!-- JS los rellena -->
-      </div>
-      <div class="gamificacion">
-        <p>Puntos: <span id="puntos">0</span></p>
-        <p>Nivel: <span id="nivel">1</span></p>
-      </div>
-    </section>
-
-    <!-- BLOG -->
-    <section id="blog" class="seccion" style="display:none;">
-      <h2>BLOG COMUNITARIO</h2>
-      <p>Aquí los usuarios pueden compartir experiencias, consejos o rutinas.</p>
-      <textarea placeholder="Escribe tu blog aquí..."></textarea>
-      <button>PUBLICAR</button>
+    <section id="blog" class="seccion">
+      <h2>Blog</h2>
+      <p>Comparte tus experiencias o consejos con la comunidad.</p>
+      <textarea placeholder="Escribe tu entrada aquí..."></textarea>
+      <button>Publicar</button>
     </section>
   </main>
 
