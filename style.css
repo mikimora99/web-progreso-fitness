@@ -1,83 +1,107 @@
-/* Reset básico */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: sans-serif;
-  text-transform: uppercase;
-}
-
+/* Estilos generales */
 body {
+  font-family: Arial, sans-serif;
   background-color: #0f1e29;
   color: white;
-  padding: 20px;
+  margin: 0;
+  padding: 0;
 }
 
 header {
   background-color: #0f1e29;
   padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #deff77;
+  text-align: center;
+  border-bottom: 1px solid #deff77;
 }
 
-h1 {
-  font-size: 2rem;
+header h1 {
+  margin: 0;
+  font-size: 2em;
   color: #deff77;
   cursor: pointer;
 }
 
-nav button {
-  background: transparent;
-  border: 2px solid transparent;
-  color: white;
-  padding: 8px 12px;
-  margin-left: 10px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
+nav {
+  margin-top: 10px;
 }
 
-nav button.activo {
+nav button {
+  background: none;
+  border: 2px solid transparent;
+  color: white;
+  margin: 0 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+nav button:hover {
   border-color: #deff77;
   color: #deff77;
 }
 
-main {
-  margin-top: 30px;
+nav button.active {
+  border-color: #deff77;
+  color: #deff77;
+  background: none;
 }
 
 .seccion {
   display: none;
+  padding: 20px;
 }
 
 .seccion.visible {
   display: block;
 }
 
-#seleccion select {
-  margin: 10px 5px;
-  padding: 8px;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-}
-
+/* Botones generales */
 button {
   background-color: #deff77;
   color: #0f1e29;
   border: none;
-  padding: 10px 15px;
-  margin: 10px 5px;
-  border-radius: 12px;
-  cursor: pointer;
+  padding: 10px 16px;
+  margin-top: 10px;
+  border-radius: 10px;
   font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-transform: uppercase;
+}
+
+button:hover {
+  background-color: #c2d95f;
 }
 
 button.rojo {
-  background-color: #ff4c4c;
+  background-color: red;
   color: white;
+}
+
+button.rojo:hover {
+  background-color: darkred;
+}
+
+/* Inputs y selects */
+input, select, textarea {
+  display: block;
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 10px;
+  border: none;
+  font-size: 1em;
+  background-color: #ffffff10;
+  color: white;
+}
+
+/* Selección y tabla de ejercicios */
+#seleccion {
+  margin-top: 20px;
 }
 
 #tabla-ejercicios {
@@ -87,124 +111,142 @@ button.rojo {
 .tabla-ejercicio {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .tabla-ejercicio th, .tabla-ejercicio td {
-  border: 1px solid white;
-  padding: 8px;
+  border: 1px solid #deff77;
+  padding: 10px;
   text-align: center;
 }
 
-.fila-completada {
+.tabla-ejercicio tr.completado {
   opacity: 0.4;
 }
 
-.timer-bar {
-  height: 10px;
+.timer-descanso {
+  text-align: center;
+  margin: 10px auto;
+  background-color: #ffffff10;
+  border-radius: 10px;
+  height: 20px;
+  width: 200px;
+  overflow: hidden;
+  position: relative;
+}
+
+.timer-barra {
   background-color: #deff77;
-  margin: 5px 0;
-  border-radius: 6px;
+  height: 100%;
+  width: 100%;
   transition: width 1s linear;
 }
 
+/* Sección planes */
 .plan {
-  background-color: #142836;
+  background-color: #ffffff10;
   padding: 15px;
-  border-radius: 12px;
   margin: 10px 0;
+  border-left: 4px solid #deff77;
+  border-radius: 8px;
 }
 
+/* Perfil de usuario */
 #perfil {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 #siluetaPerfil {
-  width: 100px;
-  height: 100px;
-  background-color: gray;
-  border-radius: 50%;
-  display: inline-block;
-  background-image: url('silueta.png'); /* opcional */
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png');
   background-size: cover;
+  background-position: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid #deff77;
   cursor: pointer;
 }
 
-input[type="file"] {
+.oculto {
   display: none;
 }
 
+/* Medidas en dos columnas */
 .grid-medidas {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 
-details {
-  background-color: #122531;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 10px;
-}
-
-details summary {
-  cursor: pointer;
-  color: #deff77;
-  font-weight: bold;
-}
-
-textarea {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: none;
-  resize: vertical;
-}
-
-input, select {
-  padding: 8px;
-  margin: 5px;
-  border-radius: 10px;
-  border: none;
-}
-
+/* Calendario */
 #calendario-usuario {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-top: 10px;
+  gap: 5px;
+  margin-top: 15px;
 }
 
-.cal-dia {
-  width: 30px;
-  height: 30px;
+.calendario-dia {
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
-  background-color: #122531;
+  background-color: #ffffff10;
+  color: white;
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-size: 0.8rem;
+  justify-content: center;
   cursor: pointer;
 }
 
-.cal-dia.completado {
+.calendario-dia.completado {
   background-color: #deff77;
   color: #0f1e29;
+  font-weight: bold;
 }
 
-#formIA {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
+.mes-titulo {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  color: #deff77;
 }
 
-#resultadoIA {
-  margin-top: 10px;
-  background-color: #122531;
+/* Detalles desplegables */
+details {
+  margin-top: 20px;
+  background-color: #ffffff10;
   padding: 10px;
+  border-radius: 8px;
+}
+
+/* Estilo de insignias / logros */
+#zona-recompensas {
+  margin-top: 20px;
+}
+
+.insignia {
+  display: inline-block;
+  background-color: #deff77;
+  color: #0f1e29;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  margin: 5px;
+}
+
+/* Estilos para blog */
+#blog textarea {
+  width: 100%;
+  height: 120px;
+  margin-top: 15px;
   border-radius: 10px;
+  background-color: #ffffff10;
+  color: white;
+  padding: 10px;
+}
+
+#blog button {
+  margin-top: 10px;
 }
